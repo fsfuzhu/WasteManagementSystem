@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <unordered_map>
 
 /**
  * @brief File I/O utilities for the waste management system

@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui;vendor;$(IncludePath)</IncludePath>
+    <IncludePath>vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui\backends;vendor\imgui;vendor;$(IncludePath)</IncludePath>
     <LibraryPath>vendor\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui;vendor;$(IncludePath)</IncludePath>
+    <IncludePath>vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui\backends;vendor\imgui;vendor;$(IncludePath)</IncludePath>
     <LibraryPath>vendor\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
