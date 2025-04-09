@@ -1,4 +1,3 @@
-```cpp
 // MapVisualization.h
 // This file defines the map visualization UI component
 #pragma once
@@ -28,4 +27,3 @@
          */
         void Render(const std::vector<WasteLocation>& locations, const Route* route) {}
 };
-```
