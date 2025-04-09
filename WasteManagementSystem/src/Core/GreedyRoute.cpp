@@ -1,9 +1,7 @@
 // GreedyRoute.cpp
 // Implementation of the Greedy route algorithm
+#include "pch.h"
 #include "GreedyRoute.h"
-#include <algorithm>
-#include <limits>
-#include <iostream>
 
 GreedyRoute::GreedyRoute()
     : Route("Greedy Route", 30.0f) // 30% waste threshold for greedy route

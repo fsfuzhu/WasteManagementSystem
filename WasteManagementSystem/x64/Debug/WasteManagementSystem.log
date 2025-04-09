@@ -1,127 +1,41 @@
 ﻿cl : command line  warning D9025: overriding '/sdl' with '/GS-'
-  LocationClustering.cpp
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\AI\LocationClustering.cpp(36,62): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\AI\LocationClustering.cpp(36,62): warning C4267:         with
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\AI\LocationClustering.cpp(36,62): warning C4267:         [
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\AI\LocationClustering.cpp(36,62): warning C4267:             _Ty=int
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\AI\LocationClustering.cpp(36,62): warning C4267:         ]
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\AI\LocationClustering.cpp(198,20): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-  RouteLearningAgent.cpp
-  WasteLevelPredictor.cpp
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\AI\WasteLevelPredictor.cpp(12,27): warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\AI\WasteLevelPredictor.cpp(18,27): warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\AI\WasteLevelPredictor.cpp(248,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  Application.cpp
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.h(10,8): warning C4099: 'GLFWwindow': type name first seen using 'class' now seen using 'struct'
-  (compiling source file 'src/Application.cpp')
-      C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Application.h(21,7):
-      see declaration of 'GLFWwindow'
-  
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\vendor\glfw\include\GLFW\glfw3.h(1403,16): warning C4099: 'GLFWwindow': type name first seen using 'class' now seen using 'struct'
-  (compiling source file 'src/Application.cpp')
-      C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Application.h(21,7):
-      see declaration of 'GLFWwindow'
-  
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Application.cpp(239,30): warning C4996: 'ctime': This function or variable may be unsafe. Consider using ctime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  GreedyRoute.cpp
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Core\GreedyRoute.cpp(62,32): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  MSTRoute.cpp
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Core\MSTRoute.cpp(43,11): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Core\MSTRoute.cpp(51,10): error C2039: 'unordered_map': is not a member of 'std'
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\iostream(19,1):
-      see declaration of 'std'
-  
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Core\MSTRoute.cpp(51,10): error C2065: 'unordered_map': undeclared identifier
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Core\MSTRoute.cpp(51,24): error C2062: type 'int' unexpected
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Core\MSTRoute.cpp(53,9): error C2065: 'idToIndex': undeclared identifier
-  NonOptimizedRoute.cpp
-  OptimizedRoute.cpp
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Core\OptimizedRoute.cpp(114,32): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  Route.cpp
-  TSPRoute.cpp
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Core\TSPRoute.cpp(105,32): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Core\TSPRoute.cpp(148,57): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Core\TSPRoute.cpp(148,54): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  WasteLocation.cpp
-  main.cpp
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.h(10,8): warning C4099: 'GLFWwindow': type name first seen using 'class' now seen using 'struct'
-  (compiling source file 'src/main.cpp')
-      C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Application.h(21,7):
-      see declaration of 'GLFWwindow'
-  
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\vendor\glfw\include\GLFW\glfw3.h(1403,16): warning C4099: 'GLFWwindow': type name first seen using 'class' now seen using 'struct'
-  (compiling source file 'src/main.cpp')
-      C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Application.h(21,7):
-      see declaration of 'GLFWwindow'
-  
   UIManager.cpp
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Application.h(21,7): warning C4099: 'GLFWwindow': type name first seen using 'struct' now seen using 'class'
+C:\Users\Administrator\Desktop\cppCoursework\WasteManagementSystem\WasteManagementSystem\src\Application.h(21,7): warning C4099: 'GLFWwindow': type name first seen using 'struct' now seen using 'class'
   (compiling source file 'src/UI/UIManager.cpp')
-      C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.h(10,8):
+      C:\Users\Administrator\Desktop\cppCoursework\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.h(10,8):
       see declaration of 'GLFWwindow'
   
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.cpp(12,10): error C1083: Cannot open include file: 'imgui_impl_glfw.h': No such file or directory
-  FileIO.cpp
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.h(72,44): error C2039: 'unordered_map': is not a member of 'std'
-  (compiling source file 'src/Utils/FileIO.cpp')
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\fstream(20,1):
-      see declaration of 'std'
+C:\Users\Administrator\Desktop\cppCoursework\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.cpp(467,77): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Administrator\Desktop\cppCoursework\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.cpp(495,59): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Administrator\Desktop\cppCoursework\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.cpp(840,75): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Administrator\Desktop\cppCoursework\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.cpp(1273,9): warning C4566: character represented by universal-character-name '\u00A9' cannot be represented in the current code page (936)
+C:\Users\Administrator\Desktop\cppCoursework\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.cpp(1312,20): warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\memory(3298,27): error C2027: use of undefined type 'RouteComparisonPanel'
+  (compiling source file 'src/UI/UIManager.cpp')
+      C:\Users\Administrator\Desktop\cppCoursework\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.h(14,7):
+      see declaration of 'RouteComparisonPanel'
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\memory(3298,27):
+      the template instantiation context (the oldest one first) is
+          C:\Users\Administrator\Desktop\cppCoursework\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.h(28,43):
+          see reference to class template instantiation 'std::unique_ptr<RouteComparisonPanel,std::default_delete<RouteComparisonPanel>>' being compiled
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\memory(3334,92):
+          see reference to class template instantiation 'std::default_delete<RouteComparisonPanel>' being compiled
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\memory(3297,23):
+          while compiling class template member function 'void std::default_delete<RouteComparisonPanel>::operator ()(_Ty *) noexcept const'
+          with
+          [
+              _Ty=RouteComparisonPanel
+          ]
+              C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\memory(3409,33):
+              see the first reference to 'std::default_delete<RouteComparisonPanel>::operator ()' in 'std::unique_ptr<RouteComparisonPanel,std::default_delete<RouteComparisonPanel>>::~unique_ptr'
+              C:\Users\Administrator\Desktop\cppCoursework\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.cpp(36,1):
+              see the first reference to 'std::unique_ptr<RouteComparisonPanel,std::default_delete<RouteComparisonPanel>>::~unique_ptr' in 'UIManager::UIManager'
   
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.h(72,33): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-  (compiling source file 'src/Utils/FileIO.cpp')
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\memory(3298,25): error C2338: static_assert failed: 'can't delete an incomplete type'
+  (compiling source file 'src/UI/UIManager.cpp')
   
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.h(72,57): error C2143: syntax error: missing ',' before '<'
-  (compiling source file 'src/Utils/FileIO.cpp')
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\memory(3299,9): warning C4150: deletion of pointer to incomplete type 'RouteComparisonPanel'; no destructor called
+  (compiling source file 'src/UI/UIManager.cpp')
+      C:\Users\Administrator\Desktop\cppCoursework\WasteManagementSystem\WasteManagementSystem\src\UI\UIManager.h(14,7):
+      see declaration of 'RouteComparisonPanel'
   
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(30,34): warning C4996: 'ctime': This function or variable may be unsafe. Consider using ctime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(96,34): warning C4996: 'ctime': This function or variable may be unsafe. Consider using ctime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(177,34): warning C4996: 'ctime': This function or variable may be unsafe. Consider using ctime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(323,44): error C2039: 'unordered_map': is not a member of 'std'
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\chrono(45,1):
-      see declaration of 'std'
-  
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(323,33): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(323,57): error C2143: syntax error: missing ',' before '<'
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(327,28): error C2065: 'filename': undeclared identifier
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(329,53): error C2065: 'filename': undeclared identifier
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(335,33): error C2065: 'predictions': undeclared identifier
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(335,26): error C2530: 'pair': references must be initialized
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(335,26): error C3531: 'pair': a symbol whose type contains 'auto' must have an initializer
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(335,31): error C2143: syntax error: missing ';' before ':'
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(335,44): error C2143: syntax error: missing ';' before ')'
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(336,28): error C2672: 'std::max': no matching overloaded function found
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(85,26):
-      could be '_Ty std::max(std::initializer_list<_Elem>)'
-          C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(336,28):
-          '_Ty std::max(std::initializer_list<_Elem>)': could not deduce template argument for 'std::initializer_list<_Elem>' from 'size_t'
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(82,26):
-      or       '_Ty std::max(std::initializer_list<_Elem>,_Pr)'
-          C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(336,28):
-          '_Ty std::max(std::initializer_list<_Elem>,_Pr)': expects 2 arguments - 1 provided
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(74,6):
-      or       'const _Ty &std::max(const _Ty &,const _Ty &) noexcept(<expr>)'
-          C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(336,28):
-          'const _Ty &std::max(const _Ty &,const _Ty &) noexcept(<expr>)': expects 2 arguments - 1 provided
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(64,33):
-      or       'const _Ty &std::max(const _Ty &,const _Ty &,_Pr) noexcept(<expr>)'
-          C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(336,28):
-          'const _Ty &std::max(const _Ty &,const _Ty &,_Pr) noexcept(<expr>)': expects 3 arguments - 1 provided
-  
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(347,33): error C2065: 'predictions': undeclared identifier
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(347,26): error C2530: 'pair': references must be initialized
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(347,26): error C3531: 'pair': a symbol whose type contains 'auto' must have an initializer
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(347,31): error C2143: syntax error: missing ';' before ':'
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(347,44): error C2143: syntax error: missing ';' before ')'
-C:\Users\Administrator\source\repos\WasteManagementSystem\WasteManagementSystem\src\Utils\FileIO.cpp(368,60): error C2065: 'filename': undeclared identifier
-  imgui_impl_glfw.cpp
-  imgui_impl_opengl3.cpp
-  imgui.cpp
-  imgui_demo.cpp
-  imgui_draw.cpp
-  imgui_tables.cpp
-  Generating Code...
-  Compiling...
-  imgui_widgets.cpp
-  implot.cpp
-  implot_items.cpp
-  Generating Code...

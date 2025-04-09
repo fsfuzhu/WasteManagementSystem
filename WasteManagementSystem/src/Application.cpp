@@ -1,14 +1,9 @@
 // Application.cpp
 // Implementation of the main application class
+#include "pch.h"
 #include "Application.h"
 #include "UI/UIManager.h"
 #include "Utils/FileIO.h"
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
-#include <iostream>
-#include <chrono>
-#include <random>
-#include <fstream>
 
 Application::Application()
     : m_window(nullptr),

@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui\backends;vendor\imgui;vendor;$(IncludePath)</IncludePath>
+    <IncludePath>..\WasteManagementSystem;vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui\backends;vendor\imgui;vendor;$(IncludePath)</IncludePath>
     <LibraryPath>vendor\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui\backends;vendor\imgui;vendor;$(IncludePath)</IncludePath>
+    <IncludePath>..\WasteManagementSystem;vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui\backends;vendor\imgui;vendor;$(IncludePath)</IncludePath>
     <LibraryPath>vendor\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -114,6 +114,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,6 +133,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,6 +145,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\AI\LocationClustering.cpp" />
     <ClCompile Include="src\AI\RouteLearningAgent.cpp" />
     <ClCompile Include="src\AI\WasteLevelPredictor.cpp" />
@@ -156,7 +164,12 @@
     <ClCompile Include="src\UI\MainWindow.cpp" />
     <ClCompile Include="src\UI\MapVisualization.cpp" />
     <ClCompile Include="src\UI\RouteComparisonPanel.cpp" />
-    <ClCompile Include="src\UI\UIManager.cpp" />
+    <ClCompile Include="src\UI\UIManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\Utils\FileIO.cpp" />
     <ClCompile Include="vendor\glad\src\glad.c" />
     <ClCompile Include="vendor\imgui\backends\imgui_impl_glfw.cpp" />
@@ -170,6 +183,7 @@
     <ClCompile Include="vendor\ImPlot\implot_items.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="pch.h" />
     <ClInclude Include="src\AI\LocationClustering.h" />
     <ClInclude Include="src\AI\RouteLearningAgent.h" />
     <ClInclude Include="src\AI\WasteLevelPredictor.h" />

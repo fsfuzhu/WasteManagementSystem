@@ -1,10 +1,7 @@
 // OptimizedRoute.cpp
 // Implementation of the OptimizedRoute class
+#include "pch.h"
 #include "OptimizedRoute.h"
-#include <iostream>
-#include <cstring>
-#include <cmath>
-#include <algorithm>
 
 // Initialize static members
 float OptimizedRoute::s_floydWarshallMatrix[8][8];

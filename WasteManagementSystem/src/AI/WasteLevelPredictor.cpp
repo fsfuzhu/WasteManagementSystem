@@ -1,11 +1,7 @@
 // WasteLevelPredictor.cpp
 // Implementation of the AI-based waste level prediction component
+#include "pch.h"
 #include "WasteLevelPredictor.h"
-#include <cmath>
-#include <numeric>
-#include <algorithm>
-#include <random>
-#include <iostream>
 
 // Helper function to get day of week (0 = Sunday, 6 = Saturday)
 int GetDayOfWeek(time_t time) {

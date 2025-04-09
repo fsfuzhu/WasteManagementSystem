@@ -1,10 +1,8 @@
 // main.cpp
 // Entry point for the Waste Management System application
+#include "pch.h"
 #include "Application.h"
-//#include "UI/UIManager.h"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <iostream>
+
 
 // GLFW callback function for error handling
 void glfw_error_callback(int error, const char* description) {

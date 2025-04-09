@@ -1,10 +1,7 @@
 // TSPRoute.cpp
 // Implementation of the TSP route algorithm
+#include "pch.h"
 #include "TSPRoute.h"
-#include <algorithm>
-#include <limits>
-#include <iostream>
-#include <cmath>
 
 TSPRoute::TSPRoute()
     : Route("TSP Route", 40.0f) // 40% waste threshold for TSP route

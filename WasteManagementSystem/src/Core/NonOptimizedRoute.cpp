@@ -1,7 +1,7 @@
 // NonOptimizedRoute.cpp
 // Implementation of the non-optimized route algorithm
+#include "pch.h"
 #include "NonOptimizedRoute.h"
-#include <algorithm>
 
 NonOptimizedRoute::NonOptimizedRoute()
     : Route("Non-Optimized Route", 0.0f) // No waste threshold for non-optimized route

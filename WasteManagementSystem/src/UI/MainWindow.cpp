@@ -1,7 +1,7 @@
 // MainWindow.cpp
 // Implementation of the main window UI component
+#include "pch.h"
 #include "MainWindow.h"
-#include "imgui.h"
 
 void MainWindow::Render() {
     // This is a placeholder for the main window implementation

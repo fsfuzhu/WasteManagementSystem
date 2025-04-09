@@ -1,5 +1,6 @@
 ﻿// UIManager.cpp
 // Implementation of the ImGui-based user interface
+#include "pch.h"
 #include "UIManager.h"
 #include "../Application.h"
 #include "../Core/WasteLocation.h"
@@ -7,20 +8,6 @@
 #include "../AI/WasteLevelPredictor.h"
 #include "../AI/RouteLearningAgent.h"
 #include "../AI/LocationClustering.h"
-
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-#include "implot.h"
-#include <GLFW/glfw3.h>
-
-#include <iostream>
-#include <algorithm>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <ctime>
-
 // Constructor
 UIManager::UIManager(Application* application)
     : m_application(application),

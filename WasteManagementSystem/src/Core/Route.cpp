@@ -1,8 +1,7 @@
 // Route.cpp
 // Implementation of the base Route class
+#include "pch.h"
 #include "Route.h"
-#include <algorithm>
-#include <cmath>
 
 Route::Route(const std::string& name, float threshold)
     : m_finalRoute(),

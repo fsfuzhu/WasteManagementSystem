@@ -136,6 +136,9 @@
     <ClCompile Include="src\UI\RouteComparisonPanel.cpp">
       <Filter>src\UI</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\OptimizedRoute.h">
@@ -230,6 +233,9 @@
     </ClInclude>
     <ClInclude Include="src\UI\RouteComparisonPanel.h">
       <Filter>src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

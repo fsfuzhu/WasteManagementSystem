@@ -1,11 +1,7 @@
 // MSTRoute.cpp
 // Implementation of the MST route algorithm using Prim's algorithm
+#include "pch.h"
 #include "MSTRoute.h"
-#include <algorithm>
-#include <limits>
-#include <queue>
-#include <unordered_set>
-#include <iostream>
 
 MSTRoute::MSTRoute()
     : Route("MST Route", 40.0f) // 40% waste threshold for MST route

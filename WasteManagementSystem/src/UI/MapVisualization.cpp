@@ -1,8 +1,7 @@
 // MapVisualization.cpp
 // Implementation of the map visualization UI component
+#include "pch.h"
 #include "MapVisualization.h"
-#include "imgui.h"
-#include <iostream>
 
 void MapVisualization::Render(const std::vector<WasteLocation>& locations, const Route* route) {
     if (locations.empty())

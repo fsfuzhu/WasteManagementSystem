@@ -1,11 +1,8 @@
 // LocationClustering.cpp
 // Implementation of the location clustering AI component
+#include "pch.h"
 #include "LocationClustering.h"
-#include <algorithm>
-#include <random>
-#include <limits>
-#include <cmath>
-#include <iostream>
+
 
 LocationClustering::LocationClustering(int numClusters)
     : m_numClusters(numClusters),

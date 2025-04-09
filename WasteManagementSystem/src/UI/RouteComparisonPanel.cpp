@@ -1,12 +1,7 @@
 // RouteComparisonPanel.cpp
 // Implementation of the route comparison panel UI component
+#include "pch.h"
 #include "RouteComparisonPanel.h"
-#include "imgui.h"
-#include "implot.h"
-#include <iostream>
-#include <algorithm>
-#include <string>
-#include <vector>
 
 void RouteComparisonPanel::Render(const std::vector<Route*>& routes) {
     if (routes.empty())

@@ -1,9 +1,7 @@
 // WasteLocation.cpp
 // Implementation of the WasteLocation class
+#include "pch.h"
 #include "WasteLocation.h"
-#include <random>
-#include <chrono>
-#include <iostream>
 
 // Constructor
 WasteLocation::WasteLocation(const std::string& name)
