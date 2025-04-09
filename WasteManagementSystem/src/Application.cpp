@@ -15,8 +15,7 @@ Application::Application()
     m_uiManager(nullptr),
     m_currentRoute(nullptr),
     m_currentRouteIndex(0),
-    m_running(false),
-    m_showDemoWindow(false)
+    m_running(false)
 {
 }
 

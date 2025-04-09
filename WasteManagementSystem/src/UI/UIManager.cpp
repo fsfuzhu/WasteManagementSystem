@@ -25,7 +25,6 @@
 UIManager::UIManager(Application* application)
     : m_application(application),
     m_window(nullptr),
-    m_showDemoWindow(false),
     m_showMapWindow(true),
     m_showDetailsWindow(true),
     m_showComparisonWindow(true),
@@ -216,7 +215,6 @@ void UIManager::RenderMenuBar()
             ImGui::MenuItem("AI Tools", nullptr, &m_showAIWindow);
             ImGui::MenuItem("Settings", nullptr, &m_showSettingsWindow);
             ImGui::Separator();
-
 
             ImGui::EndMenu();
         }

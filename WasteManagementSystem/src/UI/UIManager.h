@@ -31,7 +31,6 @@ private:
     std::unique_ptr<RouteComparisonPanel> m_routeComparisonPanel;
 
     // UI state
-    bool m_showDemoWindow;
     bool m_showMapWindow;
     bool m_showDetailsWindow;
     bool m_showComparisonWindow;

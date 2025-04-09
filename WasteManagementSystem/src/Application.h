@@ -49,7 +49,6 @@ private:
 
     // Application state
     bool m_running;
-    bool m_showDemoWindow;
 
     // Helper methods
     void InitializeRouteAlgorithms();
