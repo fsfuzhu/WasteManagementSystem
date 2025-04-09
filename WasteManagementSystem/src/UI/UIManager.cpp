@@ -842,15 +842,16 @@ void UIManager::RenderWastePredictionUI()
             }
 
             // Plot threshold lines
-            static double thresholds[] = { 40.0, 60.0 };
-            double xRange[] = { 0, static_cast<double>(daysAhead) };
+            double x_thresholds[2] = { 0, static_cast<double>(daysAhead) };
+            double y_60[2] = { 60.0, 60.0 };
+            double y_40[2] = { 40.0, 40.0 };
 
             ImPlot::PushStyleColor(ImPlotCol_Line, ImVec4(1, 0, 0, 1));
-            ImPlot::PlotHLines("60% Threshold", &thresholds[1], 1);
+            ImPlot::PlotLine("60% Threshold", x_thresholds, y_60, 2);
             ImPlot::PopStyleColor();
 
             ImPlot::PushStyleColor(ImPlotCol_Line, ImVec4(1, 1, 0, 1));
-            ImPlot::PlotHLines("40% Threshold", &thresholds[0], 1);
+            ImPlot::PlotLine("40% Threshold", x_thresholds, y_40, 2);
             ImPlot::PopStyleColor();
         }
 
@@ -944,10 +945,10 @@ void UIManager::RenderRouteLearningUI()
     if (ImPlot::BeginPlot("Learning Curve", ImVec2(-1, 300))) {
         double x[100];
         for (int i = 0; i < 100; i++) {
-            x[i] = i;
+            x[i] = (float)i;
         }
 
-        ImPlot::PlotLine("Cost", x, learningData, 100);
+        ImPlot::PlotLine("Cost", (const float*)x, (const float*)learningData, 100);
         ImPlot::SetupAxes("Training Iterations", "Route Cost (RM)");
         ImPlot::EndPlot();
     }
