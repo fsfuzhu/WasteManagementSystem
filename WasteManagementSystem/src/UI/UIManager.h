@@ -9,9 +9,12 @@
 // Forward declarations
 struct GLFWwindow;
 class Application;
-class MainWindow;
-class MapVisualization;
-class RouteComparisonPanel;
+
+// Include the full class definitions for these components
+// This fixes the incomplete type error with std::unique_ptr
+#include "MainWindow.h"
+#include "MapVisualization.h"
+#include "RouteComparisonPanel.h"
 
 /**
  * @brief Manages the ImGui-based user interface

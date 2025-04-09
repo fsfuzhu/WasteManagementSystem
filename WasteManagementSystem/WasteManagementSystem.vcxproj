@@ -153,6 +153,9 @@
     <ClCompile Include="src\Core\TSPRoute.cpp" />
     <ClCompile Include="src\Core\WasteLocation.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\UI\MainWindow.cpp" />
+    <ClCompile Include="src\UI\MapVisualization.cpp" />
+    <ClCompile Include="src\UI\RouteComparisonPanel.cpp" />
     <ClCompile Include="src\UI\UIManager.cpp" />
     <ClCompile Include="src\Utils\FileIO.cpp" />
     <ClCompile Include="vendor\glad\src\glad.c" />
