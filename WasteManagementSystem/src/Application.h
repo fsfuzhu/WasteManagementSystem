@@ -78,6 +78,14 @@ public:
      */
     void Shutdown();
 
+    /**
+     * @brief Static GLFW window resize callback
+     * @param window GLFW window handle
+     * @param width New window width
+     * @param height New window height
+     */
+    static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
+
     // Getters
     UIManager* GetUIManager() const;
     const std::vector<WasteLocation>& GetWasteLocations() const;

@@ -4,6 +4,7 @@
 #include "UI/UIManager.h"
 #include "Utils/FileIO.h"
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 #include <iostream>
 #include <chrono>
 #include <random>
@@ -133,6 +134,17 @@ void Application::Shutdown()
     m_locationClustering.reset();
 
     m_running = false;
+}
+
+void Application::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+
+    // Update UI manager with new size
+    Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+    if (app && app->GetUIManager()) {
+        app->GetUIManager()->HandleResize(width, height);
+    }
 }
 
 UIManager* Application::GetUIManager() const

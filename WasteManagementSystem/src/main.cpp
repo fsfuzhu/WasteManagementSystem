@@ -1,7 +1,7 @@
 // main.cpp
 // Entry point for the Waste Management System application
 #include "Application.h"
-#include "UI/UIManager.h"
+//#include "UI/UIManager.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -9,17 +9,6 @@
 // GLFW callback function for error handling
 void glfw_error_callback(int error, const char* description) {
     std::cerr << "GLFW Error " << error << ": " << description << std::endl;
-}
-
-// GLFW callback function for window resizing
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-
-    // Update UI manager with new size
-    Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
-    if (app && app->GetUIManager()) {
-        app->GetUIManager()->HandleResize(width, height);
-    }
 }
 
 int main(int argc, char** argv) {
@@ -59,7 +48,7 @@ int main(int argc, char** argv) {
     glfwSwapInterval(1);
 
     // Set framebuffer resize callback
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, Application::FramebufferSizeCallback);
 
     // Initialize GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
