@@ -178,6 +178,9 @@
     <ClInclude Include="src\Core\Route.h" />
     <ClInclude Include="src\Core\TSPRoute.h" />
     <ClInclude Include="src\Core\WasteLocation.h" />
+    <ClInclude Include="src\UI\MainWindow.h" />
+    <ClInclude Include="src\UI\MapVisualization.h" />
+    <ClInclude Include="src\UI\RouteComparisonPanel.h" />
     <ClInclude Include="src\UI\UIManager.h" />
     <ClInclude Include="src\Utils\FileIO.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />

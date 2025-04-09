@@ -213,6 +213,15 @@
     <ClInclude Include="src\AI\LocationClustering.h">
       <Filter>src\AI</Filter>
     </ClInclude>
+    <ClInclude Include="src\UI\MainWindow.h">
+      <Filter>src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\MapVisualization.h">
+      <Filter>src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\RouteComparisonPanel.h">
+      <Filter>src\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vendor\glfw\lib-vc2022\glfw3.dll">
