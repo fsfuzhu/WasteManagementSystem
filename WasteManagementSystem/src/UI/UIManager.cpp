@@ -216,7 +216,7 @@ void UIManager::RenderMenuBar()
             ImGui::MenuItem("AI Tools", nullptr, &m_showAIWindow);
             ImGui::MenuItem("Settings", nullptr, &m_showSettingsWindow);
             ImGui::Separator();
-            ImGui::MenuItem("ImGui Demo Window", nullptr, &m_showDemoWindow);
+
 
             ImGui::EndMenu();
         }
@@ -266,12 +266,6 @@ void UIManager::RenderMenuBar()
 // Render the UI
 void UIManager::Render()
 {
-    // Show ImGui demo window if enabled
-    if (m_showDemoWindow) {
-        ImGui::ShowDemoWindow(&m_showDemoWindow);
-        ImPlot::ShowDemoWindow();
-    }
-
     // Render UI windows
     if (m_showMapWindow) {
         RenderMapWindow();
