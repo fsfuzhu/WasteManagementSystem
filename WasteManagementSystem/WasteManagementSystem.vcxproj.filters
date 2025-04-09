@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src\Core">
+      <UniqueIdentifier>{63e277fc-c920-493f-aa87-d7592a6a7805}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\AI">
+      <UniqueIdentifier>{b34d008a-ead2-463e-af44-a01ec8755d4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\UI">
+      <UniqueIdentifier>{00182d52-4e35-4e44-b1ee-7f2d0bb3d108}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils">
+      <UniqueIdentifier>{e0d5c846-8615-4331-8cb8-277d45417eee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{39e872b7-e995-416a-a6c7-7934bf3aa6e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\glad">
+      <UniqueIdentifier>{00ee4774-786d-4735-baf2-e6ac34bac3f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\glfw">
+      <UniqueIdentifier>{ea402a67-cec5-4a1c-8a0e-4352bf5fdbd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\imgui">
+      <UniqueIdentifier>{84f2b148-c214-4f2a-a230-e4b7624019ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\ImPlot">
+      <UniqueIdentifier>{8fa94922-320a-4ed1-91ba-261a981f5b5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\glad\include">
+      <UniqueIdentifier>{0ee4de37-6a05-4c5c-9bbe-70ae7419d60e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\glad\include\glad">
+      <UniqueIdentifier>{43807032-d576-41b3-8671-83924c63ff4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\glad\include\KHR">
+      <UniqueIdentifier>{0eb8788b-40be-4838-8621-c7b23c38b4c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\glad\src">
+      <UniqueIdentifier>{7b67d5ff-23b8-4282-bc54-69459e427207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\glfw\include">
+      <UniqueIdentifier>{0de25492-5efa-413d-b14d-fe2afc380dca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\glfw\lib">
+      <UniqueIdentifier>{5ad258a8-e5a6-4819-b7c5-f01d56dc26b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\imgui\backends">
+      <UniqueIdentifier>{54eec955-e822-457c-b786-645b78451301}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\OptimizedRoute.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AI\WasteLevelPredictor.cpp">
+      <Filter>src\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIManager.cpp">
+      <Filter>src\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Application.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AI\RouteLearningAgent.cpp">
+      <Filter>src\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\TSPRoute.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\WasteLocation.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\glad\src\glad.c">
+      <Filter>vendor\glad\src</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui.cpp">
+      <Filter>vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_demo.cpp">
+      <Filter>vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_draw.cpp">
+      <Filter>vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_tables.cpp">
+      <Filter>vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_widgets.cpp">
+      <Filter>vendor\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>vendor\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\backends\imgui_impl_opengl3.cpp">
+      <Filter>vendor\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\ImPlot\implot.cpp">
+      <Filter>vendor\ImPlot</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\ImPlot\implot_items.cpp">
+      <Filter>vendor\ImPlot</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Route.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\GreedyRoute.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\MSTRoute.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\NonOptimizedRoute.cpp">
+      <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AI\LocationClustering.cpp">
+      <Filter>src\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\FileIO.cpp">
+      <Filter>src\Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Core\OptimizedRoute.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Route.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\WasteLocation.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Application.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AI\WasteLevelPredictor.h">
+      <Filter>src\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UIManager.h">
+      <Filter>src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AI\RouteLearningAgent.h">
+      <Filter>src\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\TSPRoute.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\FileIO.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\glad\include\glad\glad.h">
+      <Filter>vendor\glad\include\glad</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\glad\include\KHR\khrplatform.h">
+      <Filter>vendor\glad\include\KHR</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\glfw\include\glfw3.h">
+      <Filter>vendor\glfw\include</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\glfw\include\glfw3native.h">
+      <Filter>vendor\glfw\include</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\imgui\imconfig.h">
+      <Filter>vendor\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\imgui\imgui.h">
+      <Filter>vendor\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\imgui\imgui_internal.h">
+      <Filter>vendor\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\imgui\imstb_rectpack.h">
+      <Filter>vendor\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\imgui\imstb_textedit.h">
+      <Filter>vendor\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\imgui\imstb_truetype.h">
+      <Filter>vendor\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\imgui\backends\imgui_impl_glfw.h">
+      <Filter>vendor\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\imgui\backends\imgui_impl_opengl3.h">
+      <Filter>vendor\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\imgui\backends\imgui_impl_opengl3_loader.h">
+      <Filter>vendor\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImPlot\implot.h">
+      <Filter>vendor\ImPlot</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImPlot\implot_internal.h">
+      <Filter>vendor\ImPlot</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\GreedyRoute.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\MSTRoute.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\NonOptimizedRoute.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AI\LocationClustering.h">
+      <Filter>src\AI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vendor\glfw\lib-vc2022\glfw3.dll">
+      <Filter>vendor\glfw\lib</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="vendor\glfw\lib-vc2022\glfw3.lib">
+      <Filter>vendor\glfw\lib</Filter>
+    </Library>
+    <Library Include="vendor\glfw\lib-vc2022\glfw3_mt.lib">
+      <Filter>vendor\glfw\lib</Filter>
+    </Library>
+    <Library Include="vendor\glfw\lib-vc2022\glfw3dll.lib">
+      <Filter>vendor\glfw\lib</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
