@@ -9,21 +9,21 @@
 /**
  * @brief Component for visualizing the map and routes
  */
-    class MapVisualization {
-    public:
-        MapVisualization() = default;
-        ~MapVisualization() = default;
+class MapVisualization {
+public:
+    MapVisualization() = default;
+    ~MapVisualization() = default;
 
-        /**
-         * @brief Initialize the map visualization
-         * @return True if initialization was successful
-         */
-        bool Initialize() { return true; }
+    /**
+     * @brief Initialize the map visualization
+     * @return True if initialization was successful
+     */
+    bool Initialize() { return true; }
 
-        /**
-         * @brief Render the map with current route
-         * @param locations Vector of waste locations
-         * @param route The current route to display
-         */
-        void Render(const std::vector<WasteLocation>& locations, const Route* route) {}
+    /**
+     * @brief Render the map with current route
+     * @param locations Vector of waste locations
+     * @param route The current route to display
+     */
+    void Render(const std::vector<WasteLocation>& locations, const Route* route);
 };

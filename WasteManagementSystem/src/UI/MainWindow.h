@@ -19,5 +19,5 @@ public:
     /**
      * @brief Render the main window content
      */
-    void Render() {}
+    void Render();
 };

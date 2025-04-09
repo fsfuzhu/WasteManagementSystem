@@ -4,16 +4,6 @@
 #include "imgui.h"
 #include <iostream>
 
-MapVisualization::MapVisualization() {
-}
-
-MapVisualization::~MapVisualization() {
-}
-
-bool MapVisualization::Initialize() {
-    return true;
-}
-
 void MapVisualization::Render(const std::vector<WasteLocation>& locations, const Route* route) {
     if (locations.empty())
         return;

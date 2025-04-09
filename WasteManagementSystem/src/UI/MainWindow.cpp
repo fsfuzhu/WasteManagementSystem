@@ -3,16 +3,6 @@
 #include "MainWindow.h"
 #include "imgui.h"
 
-MainWindow::MainWindow() {
-}
-
-MainWindow::~MainWindow() {
-}
-
-bool MainWindow::Initialize() {
-    return true;
-}
-
 void MainWindow::Render() {
     // This is a placeholder for the main window implementation
     // The actual content is handled by UIManager's main rendering code

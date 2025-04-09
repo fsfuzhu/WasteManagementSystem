@@ -7,16 +7,6 @@
 #include <algorithm>
 #include <string>
 
-RouteComparisonPanel::RouteComparisonPanel() {
-}
-
-RouteComparisonPanel::~RouteComparisonPanel() {
-}
-
-bool RouteComparisonPanel::Initialize() {
-    return true;
-}
-
 void RouteComparisonPanel::Render(const std::vector<Route*>& routes) {
     if (routes.empty())
         return;

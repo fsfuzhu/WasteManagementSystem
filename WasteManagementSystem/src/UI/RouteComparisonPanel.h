@@ -23,5 +23,5 @@ public:
      * @brief Render the comparison panel
      * @param routes Vector of routes to compare
      */
-    void Render(const std::vector<Route*>& routes) {}
+    void Render(const std::vector<Route*>& routes);
 };
