@@ -3,7 +3,8 @@
 #include "pch.h"
 #include "MapVisualization.h"
 
-void MapVisualization::Render(const std::vector<WasteLocation>& locations, const Route* route) {
+void MapVisualization::Render(const std::vector<WasteLocation>& locations, const Route* route)
+{
     if (locations.empty())
         return;
 

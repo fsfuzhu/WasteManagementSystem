@@ -20,7 +20,12 @@ UIManager::UIManager(Application* application)
     m_windowWidth(1280),
     m_windowHeight(720)
 {
+    // 创建UI组件实例
+    m_mainWindow = std::make_unique<MainWindow>();
+    m_mapVisualization = std::make_unique<MapVisualization>();
+    m_routeComparisonPanel = std::make_unique<RouteComparisonPanel>();
 }
+
 
 // Destructor
 UIManager::~UIManager()
@@ -52,6 +57,11 @@ bool UIManager::Initialize(GLFWwindow* window)
 
     // Setup ImGui configuration
     SetupImGuiConfig();
+
+    // 初始化UI组件
+    m_mainWindow->Initialize();
+    m_mapVisualization->Initialize();
+    m_routeComparisonPanel->Initialize();
 
     return true;
 }
@@ -281,185 +291,12 @@ void UIManager::RenderMapWindow()
 {
     ImGui::Begin("Map Visualization", &m_showMapWindow);
 
-    // Get current route and waste locations
+    // 获取当前路线和废物位置
     const auto& wasteLocations = m_application->GetWasteLocations();
     const Route* currentRoute = m_application->GetCurrentRoute();
 
-    // Window size
-    ImVec2 windowSize = ImGui::GetContentRegionAvail();
-
-    // Draw map background
-    ImDrawList* drawList = ImGui::GetWindowDrawList();
-    ImVec2 canvasPos = ImGui::GetCursorScreenPos();
-    ImVec2 canvasSize = windowSize;
-
-    // Background
-    drawList->AddRectFilled(canvasPos,
-        ImVec2(canvasPos.x + canvasSize.x, canvasPos.y + canvasSize.y),
-        IM_COL32(30, 30, 40, 255));
-
-    // Map grid
-    float gridSize = 50.0f;
-    ImU32 gridColor = IM_COL32(50, 50, 60, 100);
-
-    for (float x = 0.0f; x < canvasSize.x; x += gridSize) {
-        drawList->AddLine(ImVec2(canvasPos.x + x, canvasPos.y),
-            ImVec2(canvasPos.x + x, canvasPos.y + canvasSize.y),
-            gridColor);
-    }
-
-    for (float y = 0.0f; y < canvasSize.y; y += gridSize) {
-        drawList->AddLine(ImVec2(canvasPos.x, canvasPos.y + y),
-            ImVec2(canvasPos.x + canvasSize.x, canvasPos.y + y),
-            gridColor);
-    }
-
-    // Center and scale the map
-    float scaleX = canvasSize.x / 500.0f;
-    float scaleY = canvasSize.y / 500.0f;
-    float scale = std::min(scaleX, scaleY);
-
-    float offsetX = canvasPos.x + (canvasSize.x - 500.0f * scale) * 0.5f;
-    float offsetY = canvasPos.y + (canvasSize.y - 500.0f * scale) * 0.5f;
-
-
-    // Draw route if available
-    if (currentRoute) {
-        const std::vector<int>& route = currentRoute->GetFinalRoute();
-
-        if (route.size() > 1) {
-            // Route color
-            ImU32 routeColor = IM_COL32(0, 255, 0, 200);
-            float routeThickness = 4.0f;
-
-            // Draw route segments
-            for (size_t i = 0; i < route.size() - 1; i++) {
-                int from = route[i];
-                int to = route[i + 1];
-
-                ImVec2 p1(
-                    offsetX + WasteLocation::location_coordinates[from][0] * scale,
-                    offsetY + WasteLocation::location_coordinates[from][1] * scale
-                );
-
-                ImVec2 p2(
-                    offsetX + WasteLocation::location_coordinates[to][0] * scale,
-                    offsetY + WasteLocation::location_coordinates[to][1] * scale
-                );
-
-                // Draw direction arrow
-                drawList->AddLine(p1, p2, routeColor, routeThickness);
-
-                // Draw arrow
-                float angle = atan2(p2.y - p1.y, p2.x - p1.x);
-                float arrowSize = 10.0f;
-
-                ImVec2 arrowPos(
-                    p1.x + (p2.x - p1.x) * 0.6f,
-                    p1.y + (p2.y - p1.y) * 0.6f
-                );
-
-                drawList->AddTriangleFilled(
-                    arrowPos,
-                    ImVec2(arrowPos.x - arrowSize * cosf(angle + 0.5f),
-                        arrowPos.y - arrowSize * sinf(angle + 0.5f)),
-                    ImVec2(arrowPos.x - arrowSize * cosf(angle - 0.5f),
-                        arrowPos.y - arrowSize * sinf(angle - 0.5f)),
-                    routeColor
-                );
-
-                // Add order number
-                char orderStr[8];
-                snprintf(orderStr, sizeof(orderStr), "%zu", i + 1);
-
-                ImVec2 orderPos(
-                    p1.x + (p2.x - p1.x) * 0.5f - 8.0f,
-                    p1.y + (p2.y - p1.y) * 0.5f - 8.0f
-                );
-
-                drawList->AddCircleFilled(orderPos, 12.0f, IM_COL32(0, 0, 0, 200));
-                drawList->AddText(
-                    ImVec2(orderPos.x - 4.0f, orderPos.y - 7.0f),
-                    IM_COL32(255, 255, 255, 255),
-                    orderStr
-                );
-            }
-        }
-    }
-
-    // Draw waste locations
-    for (size_t i = 0; i < 8; i++) {
-        ImVec2 pos(
-            offsetX + WasteLocation::location_coordinates[i][0] * scale,
-            offsetY + WasteLocation::location_coordinates[i][1] * scale
-        );
-
-        // Determine color based on location type
-        ImU32 color;
-        float radius;
-
-        if (i == 0) {
-            // Station
-            color = IM_COL32(255, 165, 0, 255); // Orange
-            radius = 15.0f;
-        }
-        else {
-            // Waste location
-            float wasteLevel = 0.0f;
-
-            // Find waste level for this location
-            for (const auto& loc : wasteLocations) {
-                if (loc.GetLocationName() == WasteLocation::dict_Id_to_Name[i]) {
-                    wasteLevel = loc.GetWasteLevel();
-                    break;
-                }
-            }
-
-            // Color based on waste level
-            if (wasteLevel < 30.0f) {
-                color = IM_COL32(0, 255, 0, 255); // Green
-            }
-            else if (wasteLevel < 60.0f) {
-                color = IM_COL32(255, 255, 0, 255); // Yellow
-            }
-            else {
-                color = IM_COL32(255, 0, 0, 255); // Red
-            }
-
-            radius = 10.0f;
-        }
-
-        // Draw location
-        drawList->AddCircleFilled(pos, radius, color);
-        drawList->AddCircle(pos, radius, IM_COL32(255, 255, 255, 200), 0, 2.0f);
-
-        // Draw location label
-        ImGui::SetCursorScreenPos(ImVec2(pos.x - 15.0f, pos.y - 35.0f));
-
-        // Get location name
-        std::string name = WasteLocation::dict_Id_to_Name[i];
-
-        // Add waste level if not station
-        if (i > 0) {
-            float wasteLevel = 0.0f;
-
-            // Find waste level for this location
-            for (const auto& loc : wasteLocations) {
-                if (loc.GetLocationName() == name) {
-                    wasteLevel = loc.GetWasteLevel();
-                    break;
-                }
-            }
-
-            name += " (" + std::to_string(static_cast<int>(wasteLevel)) + "%)";
-        }
-
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "%s", name.c_str());
-    }
-
-    // Reset cursor position
-    ImGui::SetCursorScreenPos(canvasPos);
-    ImGui::Dummy(canvasSize);
+    // 使用MapVisualization组件渲染地图，避免代码重复
+    m_mapVisualization->Render(wasteLocations, currentRoute);
 
     ImGui::End();
 }
