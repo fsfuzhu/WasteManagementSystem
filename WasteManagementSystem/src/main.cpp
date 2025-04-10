@@ -78,8 +78,8 @@ int main(int argc, char** argv) {
     app.Shutdown();
 
     // Clean up GLFW
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    //glfwDestroyWindow(window);
+    //glfwTerminate();
 
     return 0;
 }

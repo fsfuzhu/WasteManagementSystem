@@ -16,7 +16,7 @@ Application::Application()
 
 Application::~Application()
 {
-    Shutdown();
+    //Shutdown();
 }
 
 bool Application::Initialize(GLFWwindow* window)
@@ -109,12 +109,6 @@ void Application::UpdateAIComponents()
 
 void Application::Shutdown()
 {
-    // Clean up UI manager
-    if (m_uiManager) {
-        m_uiManager->Shutdown();
-        m_uiManager.reset();
-    }
-
     // Clean up route algorithms
     m_nonOptimizedRoute.reset();
     m_optimizedRoute.reset();

@@ -25,7 +25,7 @@ UIManager::UIManager(Application* application)
 // Destructor
 UIManager::~UIManager()
 {
-    Shutdown();
+
 }
 
 // Initialize UI manager
@@ -1323,15 +1323,6 @@ void UIManager::EndFrame()
         ImGui::RenderPlatformWindowsDefault();
         glfwMakeContextCurrent(backup_current_context);
     }
-}
-
-// Shutdown the UI manager
-void UIManager::Shutdown()
-{
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImPlot::DestroyContext();
-    ImGui::DestroyContext();
 }
 
 // Check if window should close

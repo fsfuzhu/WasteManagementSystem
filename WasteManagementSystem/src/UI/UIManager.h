@@ -87,11 +87,6 @@ public:
     void EndFrame();
 
     /**
-     * @brief Shutdown the UI manager
-     */
-    void Shutdown();
-
-    /**
      * @brief Check if the window should close
      * @return True if the window should close
      */
