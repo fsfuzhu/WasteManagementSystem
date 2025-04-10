@@ -161,10 +161,12 @@
     <ClCompile Include="src\Core\TSPRoute.cpp" />
     <ClCompile Include="src\Core\WasteLocation.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\UI\AIToolsPanel.cpp" />
     <ClCompile Include="src\UI\MainWindow.cpp" />
     <ClCompile Include="src\UI\MapVisualization.cpp" />
     <ClCompile Include="src\UI\RouteComparisonPanel.cpp" />
     <ClCompile Include="src\UI\RouteDetailsPanel.cpp" />
+    <ClCompile Include="src\UI\SettingsPanel.cpp" />
     <ClCompile Include="src\UI\UIManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
