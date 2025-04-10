@@ -1,45 +1,48 @@
 // TSPRoute.h
-// This file defines the TSP (Traveling Salesman Problem) route algorithm
+// This file defines the TSP route algorithm
 #pragma once
 
 #include "Route.h"
+#include "OptimizedRoute.h"
 #include <vector>
 #include <algorithm>
 #include <limits>
-#include <cstdint>
 
 /**
- * @brief Implementation of the Traveling Salesman Problem route algorithm
- *
- * This class implements a route optimization algorithm based on the
- * Traveling Salesman Problem. It ensures the route starts and ends
- * at the Station (depot) while visiting all waste locations that meet
- * the waste threshold criteria (¡Ý 40%) and are within 15km of the station.
+ * @brief TSP route using Nearest Neighbor and 2-opt optimization
+ * Only visits locations where waste level >= threshold (40%)
+ * and are within 15km from the station
  */
 class TSPRoute : public Route {
 private:
     /* Private members in TSPRoute class */
-    std::vector<int> m_filteredDestinations;   // Locations that need collection
-    const float m_maxDistanceFromStation = 15.0f; // Max distance from station (15km)
-    bool m_pickupRequired = true;              // Whether any pickup is needed
+    std::vector<int> m_filteredDestinations;  // Locations that need collection
+    bool m_pickupRequired;                   // Whether any pickup is needed
+    const float m_maxDistanceFromStation = 15.0f;  // Maximum distance from station (km)
 
     // Filter destinations by waste level and distance from station
     std::vector<int> FilterDestinations(const std::vector<WasteLocation>& locations);
 
-    // Solve the TSP using nearest neighbor heuristic
+    // Use Nearest Neighbor algorithm to get initial TSP solution
     std::vector<int> SolveNearestNeighbor(const std::vector<int>& destinations);
 
-    // Solve the TSP using 2-opt local search improvement
+    // Use 2-opt local search to improve the route
     std::vector<int> Improve2Opt(const std::vector<int>& route);
-
-    // Calculate route distance
-    float CalculateRouteDistance(const std::vector<int>& route);
-
-    // Calculate individual segment distances
-    std::vector<float> CalculateSegmentDistances(const std::vector<int>& route);
 
     // Check if a 2-opt swap would improve the route
     bool Is2OptImprovement(const std::vector<int>& route, int i, int j, float currentDistance);
+
+    // Calculate total distance of a route
+    float CalculateRouteDistance(const std::vector<int>& route);
+
+    // Expand route with intermediate nodes for nodes not directly connected
+    std::vector<int> ExpandRouteWithIntermediateNodes(const std::vector<int>& basicRoute);
+
+    // Path reconstruction helper (similar to OptimizedRoute)
+    std::vector<int> PathReconstruction(int start, int end, const int matrix[8][8]);
+
+    // Calculate individual segment distances
+    std::vector<float> CalculateSegmentDistances(const std::vector<int>& route);
 
 public:
     /**
@@ -53,21 +56,15 @@ public:
     virtual ~TSPRoute();
 
     /**
-     * @brief Calculate optimized TSP route
+     * @brief Calculate TSP route visiting locations with waste level >= threshold
      * @param locations Vector of waste locations
      * @return True if a valid route was found, false if no pickup needed
      */
     virtual bool CalculateRoute(const std::vector<WasteLocation>& locations) override;
 
-    /**
-     * @brief Get filtered destinations that need pickup
-     * @return Vector of destination IDs
-     */
+    // Get filtered destinations that need pickup
     const std::vector<int>& GetFilteredDestinations() const;
 
-    /**
-     * @brief Check if pickup is required
-     * @return True if pickup is required, false otherwise
-     */
+    // Check if pickup is required
     bool IsPickupRequired() const;
 };

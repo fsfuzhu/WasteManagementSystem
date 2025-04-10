@@ -3,29 +3,35 @@
 #pragma once
 
 #include "Route.h"
+#include "OptimizedRoute.h"
 #include <vector>
+#include <algorithm>
+#include <limits>
 
 /**
- * @brief Implementation of the Greedy route algorithm
- *
- * This class implements a greedy route optimization algorithm that
- * visits waste locations with waste level ¡Ý 30%, regardless of the
- * distance from the station. It always chooses the nearest unvisited
- * location as the next destination.
+ * @brief Greedy route algorithm
+ * Visits locations where waste level >= threshold (30%)
+ * regardless of distance from station
  */
 class GreedyRoute : public Route {
 private:
     /* Private members in GreedyRoute class */
-    std::vector<int> m_filteredDestinations;   // Locations that need collection
-    bool m_pickupRequired = true;              // Whether any pickup is needed
+    std::vector<int> m_filteredDestinations;  // Locations that need collection
+    bool m_pickupRequired;                   // Whether any pickup is needed
 
     // Filter destinations by waste level
     std::vector<int> FilterDestinationsByWasteLevel(const std::vector<WasteLocation>& locations);
 
-    // Generate a greedy route by always choosing the nearest unvisited location
+    // Generate greedy route visiting all filtered destinations
     std::vector<int> GenerateGreedyRoute(const std::vector<int>& destinations);
 
-    // Calculate segment distances
+    // Expand route with intermediate nodes for nodes not directly connected
+    std::vector<int> ExpandRouteWithIntermediateNodes(const std::vector<int>& basicRoute);
+
+    // Path reconstruction helper (similar to OptimizedRoute)
+    std::vector<int> PathReconstruction(int start, int end, const int matrix[8][8]);
+
+    // Calculate individual segment distances
     std::vector<float> CalculateSegmentDistances(const std::vector<int>& route);
 
 public:
@@ -40,21 +46,15 @@ public:
     virtual ~GreedyRoute();
 
     /**
-     * @brief Calculate greedy route
+     * @brief Calculate greedy route visiting locations with waste level >= threshold
      * @param locations Vector of waste locations
      * @return True if a valid route was found, false if no pickup needed
      */
     virtual bool CalculateRoute(const std::vector<WasteLocation>& locations) override;
 
-    /**
-     * @brief Get filtered destinations that need pickup
-     * @return Vector of destination IDs
-     */
+    // Get filtered destinations that need pickup
     const std::vector<int>& GetFilteredDestinations() const;
 
-    /**
-     * @brief Check if pickup is required
-     * @return True if pickup is required, false otherwise
-     */
+    // Check if pickup is required
     bool IsPickupRequired() const;
 };

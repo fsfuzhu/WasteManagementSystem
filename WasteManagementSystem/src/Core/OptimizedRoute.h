@@ -14,8 +14,6 @@ class OptimizedRoute : public Route {
 private:
     /* Private members in OptimizedRoute class */
     std::vector<int> m_filteredDestinations;   // Locations that need collection
-    static float s_floydWarshallMatrix[8][8];  // Shortest path distances
-    static int s_shortestRouteMatrix[8][8];    // Next node in shortest path
     bool m_pickupRequired;                     // Whether any pickup is needed
 
     // Filter destinations by waste level
@@ -31,6 +29,10 @@ private:
         const int shortestRouteMatrix[8][8]);
 
 public:
+    // Made these public so they can be accessed by other route classes
+    static float s_floydWarshallMatrix[8][8];  // Shortest path distances
+    static int s_shortestRouteMatrix[8][8];    // Next node in shortest path
+
     /**
      * @brief Constructor for OptimizedRoute
      * @param wasteThreshold Minimum waste level for collection (%)

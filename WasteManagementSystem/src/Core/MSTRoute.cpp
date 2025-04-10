@@ -84,12 +84,12 @@ std::vector<std::pair<int, int>> MSTRoute::BuildMST(const std::vector<int>& dest
             int uId = destinations[u];
             int vId = destinations[v];
 
-            // Get distance between nodes
-            float weight = WasteLocation::map_distance_matrix[uId][vId];
+            // Get distance between nodes - using Floyd-Warshall matrix for actual shortest paths
+            float weight = OptimizedRoute::s_floydWarshallMatrix[uId][vId];
 
-            // If no direct path, use a large value
+            // Skip if there's no path between nodes
             if (weight >= INF) {
-                weight = 1000.0f; // Large but finite value
+                continue;
             }
 
             // Update key and parent if a shorter edge is found
@@ -104,9 +104,11 @@ std::vector<std::pair<int, int>> MSTRoute::BuildMST(const std::vector<int>& dest
     // Construct MST from parent array
     std::vector<std::pair<int, int>> mst;
     for (int i = 1; i < n; i++) {
-        // Add edge between parent[i] and i
-        // Using actual node IDs
-        mst.push_back({ destinations[parent[i]], destinations[i] });
+        // Check if the parent is valid
+        if (parent[i] != -1) {
+            // Add edge between parent[i] and i using actual node IDs
+            mst.push_back({ destinations[parent[i]], destinations[i] });
+        }
     }
 
     return mst;
@@ -203,17 +205,76 @@ std::vector<int> MSTRoute::ShortcutEulerTour(const std::vector<int>& eulerTour)
     return shortcutTour;
 }
 
+std::vector<int> MSTRoute::ExpandRouteWithIntermediateNodes(const std::vector<int>& shortcutTour)
+{
+    std::vector<int> expandedRoute;
+
+    // Nothing to expand for empty routes
+    if (shortcutTour.empty()) {
+        return expandedRoute;
+    }
+
+    // Add the first node
+    expandedRoute.push_back(shortcutTour[0]);
+
+    // For each adjacent pair of nodes, add intermediate nodes if needed
+    for (size_t i = 0; i < shortcutTour.size() - 1; i++) {
+        int from = shortcutTour[i];
+        int to = shortcutTour[i + 1];
+
+        // If there's no direct connection, find the shortest path using Floyd-Warshall
+        if (WasteLocation::map_distance_matrix[from][to] >= INF) {
+            // Use the path reconstruction to find intermediate nodes
+            std::vector<int> intermediatePath = PathReconstruction(from, to, OptimizedRoute::s_shortestRouteMatrix);
+
+            // Skip the first node as it's already in the route
+            for (size_t j = 1; j < intermediatePath.size(); j++) {
+                expandedRoute.push_back(intermediatePath[j]);
+            }
+        }
+        else {
+            // Direct connection, just add the destination
+            expandedRoute.push_back(to);
+        }
+    }
+
+    return expandedRoute;
+}
+
+std::vector<int> MSTRoute::PathReconstruction(int start, int end, const int matrix[8][8])
+{
+    std::vector<int> path;
+
+    // Add start node
+    path.push_back(start);
+
+    // Follow the path from start to end
+    while (start != end) {
+        start = matrix[start][end];
+        path.push_back(start);
+    }
+
+    return path;
+}
+
 std::vector<float> MSTRoute::CalculateSegmentDistances(const std::vector<int>& route)
 {
     std::vector<float> distances;
 
-    // Calculate distances between consecutive locations
+    // Calculate distances between consecutive locations using direct matrix values
     for (size_t i = 0; i < route.size() - 1; i++) {
-        float distance = WasteLocation::map_distance_matrix[route[i]][route[i + 1]];
+        int from = route[i];
+        int to = route[i + 1];
 
-        // If no direct path, use a large value
+        // Use actual distance from map matrix
+        float distance = WasteLocation::map_distance_matrix[from][to];
+
+        // Ensure we have a valid distance
         if (distance >= INF) {
-            distance = 1000.0f; // Large but finite value
+            // This should never happen with the properly expanded route
+            std::cerr << "Error: No direct path between locations " << from << " and " << to << std::endl;
+            // Use a default value for safety
+            distance = 0.0f;
         }
 
         distances.push_back(distance);
@@ -251,7 +312,10 @@ bool MSTRoute::CalculateRoute(const std::vector<WasteLocation>& locations)
     std::vector<int> eulerTour = GenerateEulerTour(mst, 0);
 
     // Shortcut Euler tour to get Hamiltonian path
-    m_finalRoute = ShortcutEulerTour(eulerTour);
+    std::vector<int> shortcutTour = ShortcutEulerTour(eulerTour);
+
+    // Expand route with intermediate nodes for locations not directly connected
+    m_finalRoute = ExpandRouteWithIntermediateNodes(shortcutTour);
 
     // Calculate individual segment distances
     m_individualDistances = CalculateSegmentDistances(m_finalRoute);

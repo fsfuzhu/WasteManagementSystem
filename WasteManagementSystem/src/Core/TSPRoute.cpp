@@ -60,7 +60,10 @@ bool TSPRoute::CalculateRoute(const std::vector<WasteLocation>& locations)
     std::vector<int> initialRoute = SolveNearestNeighbor(tspDestinations);
 
     // Then, improve the solution using 2-opt local search
-    m_finalRoute = Improve2Opt(initialRoute);
+    std::vector<int> improvedRoute = Improve2Opt(initialRoute);
+
+    // Expand route to include intermediate nodes
+    m_finalRoute = ExpandRouteWithIntermediateNodes(improvedRoute);
 
     // Calculate individual segment distances
     m_individualDistances = CalculateSegmentDistances(m_finalRoute);
@@ -90,12 +93,8 @@ std::vector<int> TSPRoute::SolveNearestNeighbor(const std::vector<int>& destinat
 
         // Find the nearest unvisited location
         for (size_t i = 0; i < remaining.size(); i++) {
-            float distance = WasteLocation::map_distance_matrix[current][remaining[i]];
-
-            // If no direct path, use a large value
-            if (distance >= INF) {
-                distance = 1000.0f; // Large but finite value
-            }
+            // Use Floyd-Warshall distances to find shortest paths
+            float distance = OptimizedRoute::s_floydWarshallMatrix[current][remaining[i]];
 
             if (distance < minDistance) {
                 minDistance = distance;
@@ -168,16 +167,12 @@ bool TSPRoute::Is2OptImprovement(const std::vector<int>& route, int i, int j, fl
     int d = route[j + 1];
 
     // Current edges: (a,b) and (c,d)
-    float currentEdgeDistance = WasteLocation::map_distance_matrix[a][b] +
-        WasteLocation::map_distance_matrix[c][d];
+    float currentEdgeDistance = OptimizedRoute::s_floydWarshallMatrix[a][b] +
+        OptimizedRoute::s_floydWarshallMatrix[c][d];
 
     // After swap, new edges: (a,c) and (b,d)
-    float newEdgeDistance = WasteLocation::map_distance_matrix[a][c] +
-        WasteLocation::map_distance_matrix[b][d];
-
-    // If any of the distances are INF, use a large value
-    if (currentEdgeDistance >= INF) currentEdgeDistance = 1000.0f;
-    if (newEdgeDistance >= INF) newEdgeDistance = 1000.0f;
+    float newEdgeDistance = OptimizedRoute::s_floydWarshallMatrix[a][c] +
+        OptimizedRoute::s_floydWarshallMatrix[b][d];
 
     // Return true if the swap reduces the distance
     return newEdgeDistance < currentEdgeDistance;
@@ -187,32 +182,85 @@ float TSPRoute::CalculateRouteDistance(const std::vector<int>& route)
 {
     float totalDistance = 0.0f;
 
-    // Sum the distances between consecutive locations
+    // Sum the distances between consecutive locations using Floyd-Warshall matrix
     for (size_t i = 0; i < route.size() - 1; i++) {
-        float distance = WasteLocation::map_distance_matrix[route[i]][route[i + 1]];
-
-        // If no direct path, use a large value
-        if (distance >= INF) {
-            distance = 1000.0f; // Large but finite value
-        }
-
+        float distance = OptimizedRoute::s_floydWarshallMatrix[route[i]][route[i + 1]];
         totalDistance += distance;
     }
 
     return totalDistance;
 }
 
+std::vector<int> TSPRoute::ExpandRouteWithIntermediateNodes(const std::vector<int>& basicRoute)
+{
+    std::vector<int> expandedRoute;
+
+    // Nothing to expand for empty routes
+    if (basicRoute.empty()) {
+        return expandedRoute;
+    }
+
+    // Add the first node
+    expandedRoute.push_back(basicRoute[0]);
+
+    // For each adjacent pair of nodes, add intermediate nodes if needed
+    for (size_t i = 0; i < basicRoute.size() - 1; i++) {
+        int from = basicRoute[i];
+        int to = basicRoute[i + 1];
+
+        // If there's no direct connection, find the shortest path using Floyd-Warshall
+        if (WasteLocation::map_distance_matrix[from][to] >= INF) {
+            // Use the path reconstruction to find intermediate nodes
+            std::vector<int> intermediatePath = PathReconstruction(from, to, OptimizedRoute::s_shortestRouteMatrix);
+
+            // Skip the first node as it's already in the route
+            for (size_t j = 1; j < intermediatePath.size(); j++) {
+                expandedRoute.push_back(intermediatePath[j]);
+            }
+        }
+        else {
+            // Direct connection, just add the destination
+            expandedRoute.push_back(to);
+        }
+    }
+
+    return expandedRoute;
+}
+
+std::vector<int> TSPRoute::PathReconstruction(int start, int end, const int matrix[8][8])
+{
+    std::vector<int> path;
+
+    // Add start node
+    path.push_back(start);
+
+    // Follow the path from start to end
+    while (start != end) {
+        start = matrix[start][end];
+        path.push_back(start);
+    }
+
+    return path;
+}
+
 std::vector<float> TSPRoute::CalculateSegmentDistances(const std::vector<int>& route)
 {
     std::vector<float> distances;
 
-    // Calculate distances between consecutive locations
+    // Calculate distances between consecutive locations using direct matrix values
     for (size_t i = 0; i < route.size() - 1; i++) {
-        float distance = WasteLocation::map_distance_matrix[route[i]][route[i + 1]];
+        int from = route[i];
+        int to = route[i + 1];
 
-        // If no direct path, use a large value
+        // Use actual distance from map matrix
+        float distance = WasteLocation::map_distance_matrix[from][to];
+
+        // Ensure we have a valid distance
         if (distance >= INF) {
-            distance = 1000.0f; // Large but finite value
+            // This should never happen with the properly expanded route
+            std::cerr << "Error: No direct path between locations " << from << " and " << to << std::endl;
+            // Use a default value for safety
+            distance = 0.0f;
         }
 
         distances.push_back(distance);
