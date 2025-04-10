@@ -2,12 +2,8 @@
 // Implementation of the ImGui-based user interface
 #include "pch.h"
 #include "UIManager.h"
-#include "../Application.h"
-#include "../Core/WasteLocation.h"
-#include "../Core/Route.h"
-#include "../AI/WasteLevelPredictor.h"
-#include "../AI/RouteLearningAgent.h"
-#include "../AI/LocationClustering.h"
+#include "..\Application.h"
+
 // Constructor
 UIManager::UIManager(Application* application)
     : m_application(application),
@@ -17,6 +13,8 @@ UIManager::UIManager(Application* application)
     m_showComparisonWindow(true),
     m_showAIWindow(true),
     m_showSettingsWindow(false),
+    m_darkTheme(true),
+    m_fontScale(1.0f),
     m_windowWidth(1280),
     m_windowHeight(720)
 {
@@ -24,13 +22,19 @@ UIManager::UIManager(Application* application)
     m_mainWindow = std::make_unique<MainWindow>();
     m_mapVisualization = std::make_unique<MapVisualization>();
     m_routeComparisonPanel = std::make_unique<RouteComparisonPanel>();
-}
+    m_routeDetailsPanel = std::make_unique<RouteDetailsPanel>();
+    m_aiToolsPanel = std::make_unique<AIToolsPanel>();
 
+    // 设置Panel需要传入Theme Toggle回调
+    m_settingsPanel = std::make_unique<SettingsPanel>(
+        [this]() { this->ToggleTheme(); }
+    );
+}
 
 // Destructor
 UIManager::~UIManager()
 {
-
+    // Components will be automatically destroyed by unique_ptr
 }
 
 // Initialize UI manager
@@ -62,6 +66,9 @@ bool UIManager::Initialize(GLFWwindow* window)
     m_mainWindow->Initialize();
     m_mapVisualization->Initialize();
     m_routeComparisonPanel->Initialize();
+    m_routeDetailsPanel->Initialize();
+    m_aiToolsPanel->Initialize();
+    m_settingsPanel->Initialize();
 
     return true;
 }
@@ -69,28 +76,36 @@ bool UIManager::Initialize(GLFWwindow* window)
 // Setup ImGui style
 void UIManager::SetupImGuiStyle()
 {
-    // Set up modern dark theme
-    ImGui::StyleColorsDark();
+    // Apply theme based on current setting
+    if (m_darkTheme) {
+        ImGui::StyleColorsDark();
+    }
+    else {
+        ImGui::StyleColorsLight();
+    }
+
     ImGuiStyle& style = ImGui::GetStyle();
 
     // Adjust colors
     auto& colors = style.Colors;
-    colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.13f, 1.0f);
-    colors[ImGuiCol_Header] = ImVec4(0.2f, 0.2f, 0.23f, 1.0f);
-    colors[ImGuiCol_HeaderHovered] = ImVec4(0.25f, 0.25f, 0.28f, 1.0f);
-    colors[ImGuiCol_HeaderActive] = ImVec4(0.27f, 0.27f, 0.33f, 1.0f);
-    colors[ImGuiCol_Button] = ImVec4(0.2f, 0.2f, 0.25f, 1.0f);
-    colors[ImGuiCol_ButtonHovered] = ImVec4(0.25f, 0.25f, 0.3f, 1.0f);
-    colors[ImGuiCol_ButtonActive] = ImVec4(0.3f, 0.3f, 0.35f, 1.0f);
-    colors[ImGuiCol_FrameBg] = ImVec4(0.15f, 0.15f, 0.18f, 1.0f);
-    colors[ImGuiCol_FrameBgHovered] = ImVec4(0.2f, 0.2f, 0.23f, 1.0f);
-    colors[ImGuiCol_FrameBgActive] = ImVec4(0.25f, 0.25f, 0.28f, 1.0f);
-    colors[ImGuiCol_Tab] = ImVec4(0.15f, 0.15f, 0.18f, 1.0f);
-    colors[ImGuiCol_TabHovered] = ImVec4(0.3f, 0.3f, 0.33f, 1.0f);
-    colors[ImGuiCol_TabActive] = ImVec4(0.25f, 0.25f, 0.28f, 1.0f);
-    colors[ImGuiCol_TitleBg] = ImVec4(0.15f, 0.15f, 0.18f, 1.0f);
-    colors[ImGuiCol_TitleBgActive] = ImVec4(0.2f, 0.2f, 0.23f, 1.0f);
-    colors[ImGuiCol_MenuBarBg] = ImVec4(0.15f, 0.15f, 0.18f, 1.0f);
+    if (m_darkTheme) {
+        colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.13f, 1.0f);
+        colors[ImGuiCol_Header] = ImVec4(0.2f, 0.2f, 0.23f, 1.0f);
+        colors[ImGuiCol_HeaderHovered] = ImVec4(0.25f, 0.25f, 0.28f, 1.0f);
+        colors[ImGuiCol_HeaderActive] = ImVec4(0.27f, 0.27f, 0.33f, 1.0f);
+        colors[ImGuiCol_Button] = ImVec4(0.2f, 0.2f, 0.25f, 1.0f);
+        colors[ImGuiCol_ButtonHovered] = ImVec4(0.25f, 0.25f, 0.3f, 1.0f);
+        colors[ImGuiCol_ButtonActive] = ImVec4(0.3f, 0.3f, 0.35f, 1.0f);
+        colors[ImGuiCol_FrameBg] = ImVec4(0.15f, 0.15f, 0.18f, 1.0f);
+        colors[ImGuiCol_FrameBgHovered] = ImVec4(0.2f, 0.2f, 0.23f, 1.0f);
+        colors[ImGuiCol_FrameBgActive] = ImVec4(0.25f, 0.25f, 0.28f, 1.0f);
+        colors[ImGuiCol_Tab] = ImVec4(0.15f, 0.15f, 0.18f, 1.0f);
+        colors[ImGuiCol_TabHovered] = ImVec4(0.3f, 0.3f, 0.33f, 1.0f);
+        colors[ImGuiCol_TabActive] = ImVec4(0.25f, 0.25f, 0.28f, 1.0f);
+        colors[ImGuiCol_TitleBg] = ImVec4(0.15f, 0.15f, 0.18f, 1.0f);
+        colors[ImGuiCol_TitleBgActive] = ImVec4(0.2f, 0.2f, 0.23f, 1.0f);
+        colors[ImGuiCol_MenuBarBg] = ImVec4(0.15f, 0.15f, 0.18f, 1.0f);
+    }
 
     // Adjust style variables
     style.WindowRounding = 4.0f;
@@ -116,6 +131,9 @@ void UIManager::SetupImGuiStyle()
         style.WindowRounding = 0.0f;
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
+
+    // Apply font scale
+    io.FontGlobalScale = m_fontScale;
 }
 
 // Setup ImGui configuration
@@ -306,124 +324,12 @@ void UIManager::RenderDetailsWindow()
 {
     ImGui::Begin("Route Details", &m_showDetailsWindow);
 
-    // Get current route and waste locations
+    // 获取当前路线和废物位置
     const auto& wasteLocations = m_application->GetWasteLocations();
     const Route* currentRoute = m_application->GetCurrentRoute();
 
-    if (!currentRoute) {
-        ImGui::Text("No route selected.");
-        ImGui::End();
-        return;
-    }
-
-    // Route name and waste threshold
-    ImGui::Text("Route Type: %s", currentRoute->GetRouteName().c_str());
-    ImGui::Text("Waste Threshold: %.0f%%", currentRoute->GetWasteThreshold());
-    ImGui::Separator();
-
-    // Display waste levels
-    ImGui::Text("Waste Levels:");
-    ImGui::Columns(2, "waste_levels");
-    ImGui::Text("Location"); ImGui::NextColumn();
-    ImGui::Text("Waste Level (%)"); ImGui::NextColumn();
-    ImGui::Separator();
-
-    for (const auto& location : wasteLocations) {
-        ImGui::Text("%s", location.GetLocationName().c_str());
-        ImGui::NextColumn();
-
-        // Color based on waste level
-        float wasteLevel = location.GetWasteLevel();
-        ImVec4 color;
-
-        if (wasteLevel < 30.0f) {
-            color = ImVec4(0.0f, 1.0f, 0.0f, 1.0f); // Green
-        }
-        else if (wasteLevel < 60.0f) {
-            color = ImVec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow
-        }
-        else {
-            color = ImVec4(1.0f, 0.0f, 0.0f, 1.0f); // Red
-        }
-
-        ImGui::TextColored(color, "%.1f%%", wasteLevel);
-        ImGui::NextColumn();
-    }
-
-    ImGui::Columns(1);
-    ImGui::Separator();
-
-    // Display route information
-    const std::vector<int>& route = currentRoute->GetFinalRoute();
-    const std::vector<float>& distances = currentRoute->GetIndividualDistances();
-
-    if (route.empty()) {
-        ImGui::Text("No route calculated.");
-        ImGui::End();
-        return;
-    }
-
-    ImGui::Text("Route Sequence:");
-
-    // Display route as Station -> A -> B -> Station
-    std::string routeStr;
-    for (size_t i = 0; i < route.size(); i++) {
-        routeStr += WasteLocation::dict_Id_to_Name[route[i]];
-        if (i < route.size() - 1) {
-            routeStr += " -> ";
-        }
-    }
-
-    ImGui::TextWrapped("%s", routeStr.c_str());
-    ImGui::Separator();
-
-    // Route segments
-    ImGui::Text("Route Segments:");
-    ImGui::Columns(2, "route_segments");
-    ImGui::Text("Segment"); ImGui::NextColumn();
-    ImGui::Text("Distance (km)"); ImGui::NextColumn();
-    ImGui::Separator();
-
-    for (size_t i = 0; i < route.size() - 1; i++) {
-        std::string segment = WasteLocation::dict_Id_to_Name[route[i]] + " -> " +
-            WasteLocation::dict_Id_to_Name[route[i + 1]];
-        ImGui::Text("%s", segment.c_str());
-        ImGui::NextColumn();
-
-        ImGui::Text("%.2f", distances[i]);
-        ImGui::NextColumn();
-    }
-
-    ImGui::Columns(1);
-    ImGui::Separator();
-
-    // Route costs
-    ImGui::Text("Route Costs:");
-
-    ImGui::Columns(2, "route_costs");
-    ImGui::Text("Total Distance:"); ImGui::NextColumn();
-    ImGui::Text("%.2f km", currentRoute->GetTotalDistance());
-    ImGui::NextColumn();
-
-    ImGui::Text("Time Taken:"); ImGui::NextColumn();
-    ImGui::Text("%.2f min (%.2f hours)",
-        currentRoute->GetTimeTaken(),
-        currentRoute->GetTimeTaken() / 60.0f);
-    ImGui::NextColumn();
-
-    ImGui::Text("Fuel Consumption:"); ImGui::NextColumn();
-    ImGui::Text("RM %.2f", currentRoute->GetFuelConsumption());
-    ImGui::NextColumn();
-
-    ImGui::Text("Driver's Wage:"); ImGui::NextColumn();
-    ImGui::Text("RM %.2f", currentRoute->GetWage());
-    ImGui::NextColumn();
-
-    ImGui::Text("Total Cost:"); ImGui::NextColumn();
-    ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "RM %.2f", currentRoute->GetTotalCost());
-    ImGui::NextColumn();
-
-    ImGui::Columns(1);
+    // 使用RouteDetailsPanel组件渲染详情
+    m_routeDetailsPanel->Render(wasteLocations, currentRoute);
 
     ImGui::End();
 }
@@ -433,104 +339,18 @@ void UIManager::RenderComparisonWindow()
 {
     ImGui::Begin("Route Comparison", &m_showComparisonWindow);
 
-    // Button to regenerate waste levels
-    if (ImGui::Button("Regenerate Waste Levels")) {
-        m_application->RegenerateWasteLevels();
+    // 使用RouteComparisonPanel组件渲染比较视图
+    // 获取所有路线对象放入向量
+    std::vector<Route*> routes;
+
+    // 这里应该从application获取所有路线，而不仅仅是当前路线
+    // 这个功能需要在Application中增加GetAllRoutes方法
+    Route* currentRoute = m_application->GetCurrentRoute();
+    if (currentRoute) {
+        routes.push_back(currentRoute);
     }
 
-    ImGui::SameLine();
-
-    // Button to recalculate routes
-    if (ImGui::Button("Recalculate All Routes")) {
-        m_application->RecalculateCurrentRoute();
-    }
-
-    ImGui::SameLine();
-
-    // Button to export report
-    if (ImGui::Button("Export Full Report")) {
-        m_application->ExportRouteReport("WasteManagementReport.txt");
-    }
-
-    ImGui::Separator();
-
-    // Compare routes with a bar chart
-    if (ImPlot::BeginPlot("Route Cost Comparison", ImVec2(-1, 300))) {
-        // IMPORTANT: Call setup functions AFTER BeginPlot but BEFORE any Plot functions
-        ImPlot::SetupAxes("Route Type", "Cost (RM)");
-
-        // Route names
-        const char* labels[] = {
-            "Non-Optimized",
-            "Optimized",
-            "MST",
-            "TSP",
-            "Greedy"
-        };
-
-        // Setup axis ticks with labels
-        ImPlot::SetupAxisTicks(ImAxis_X1, 0, 4, 5, labels, false);
-
-        // Route costs
-        float distances[5] = { 0 };
-        float fuelCosts[5] = { 0 };
-        float wageCosts[5] = { 0 };
-        float totalCosts[5] = { 0 };
-
-        // Get route costs
-        if (m_application->GetCurrentRoute()) {
-            // Temporary - in a real implementation we would get all routes
-            totalCosts[m_application->GetCurrentRouteIndex()] =
-                m_application->GetCurrentRoute()->GetTotalCost();
-            distances[m_application->GetCurrentRouteIndex()] =
-                m_application->GetCurrentRoute()->GetTotalDistance();
-            fuelCosts[m_application->GetCurrentRouteIndex()] =
-                m_application->GetCurrentRoute()->GetFuelConsumption();
-            wageCosts[m_application->GetCurrentRouteIndex()] =
-                m_application->GetCurrentRoute()->GetWage();
-        }
-
-        // Plot bar chart
-        ImPlot::PlotBars("Total Cost (RM)", totalCosts, 5, 0.7f);
-        ImPlot::PlotBars("Fuel Cost (RM)", fuelCosts, 5, 0.7f);
-        ImPlot::PlotBars("Wage Cost (RM)", wageCosts, 5, 0.7f);
-
-        ImPlot::EndPlot();
-    }
-
-    // Display cost savings
-    ImGui::Separator();
-    ImGui::Text("Cost Savings Analysis:");
-
-    ImGui::Columns(3, "cost_savings");
-    ImGui::Text("Route Type"); ImGui::NextColumn();
-    ImGui::Text("Cost (RM)"); ImGui::NextColumn();
-    ImGui::Text("Savings vs Non-Optimized (RM)"); ImGui::NextColumn();
-    ImGui::Separator();
-
-    // Display savings for each route type
-    // In a real implementation, we would calculate actual savings
-    ImGui::Text("Non-Optimized"); ImGui::NextColumn();
-    ImGui::Text("100.00"); ImGui::NextColumn();
-    ImGui::Text("-"); ImGui::NextColumn();
-
-    ImGui::Text("Optimized"); ImGui::NextColumn();
-    ImGui::Text("75.50"); ImGui::NextColumn();
-    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "24.50"); ImGui::NextColumn();
-
-    ImGui::Text("MST"); ImGui::NextColumn();
-    ImGui::Text("82.75"); ImGui::NextColumn();
-    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "17.25"); ImGui::NextColumn();
-
-    ImGui::Text("TSP"); ImGui::NextColumn();
-    ImGui::Text("78.30"); ImGui::NextColumn();
-    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "21.70"); ImGui::NextColumn();
-
-    ImGui::Text("Greedy"); ImGui::NextColumn();
-    ImGui::Text("85.20"); ImGui::NextColumn();
-    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "14.80"); ImGui::NextColumn();
-
-    ImGui::Columns(1);
+    m_routeComparisonPanel->Render(routes);
 
     ImGui::End();
 }
@@ -540,478 +360,14 @@ void UIManager::RenderAIWindow()
 {
     ImGui::Begin("AI Tools", &m_showAIWindow);
 
-    // Tabs for different AI tools
-    if (ImGui::BeginTabBar("AITabBar")) {
-        if (ImGui::BeginTabItem("Waste Level Prediction")) {
-            RenderWastePredictionUI();
-            ImGui::EndTabItem();
-        }
-
-        if (ImGui::BeginTabItem("Route Learning")) {
-            RenderRouteLearningUI();
-            ImGui::EndTabItem();
-        }
-
-        if (ImGui::BeginTabItem("Location Clustering")) {
-            RenderLocationClusteringUI();
-            ImGui::EndTabItem();
-        }
-
-        ImGui::EndTabBar();
-    }
+    // 使用AIToolsPanel组件渲染AI工具
+    m_aiToolsPanel->Render(
+        m_application->GetWasteLevelPredictor(),
+        m_application->GetRouteLearningAgent(),
+        m_application->GetLocationClustering()
+    );
 
     ImGui::End();
-}
-
-// Render waste prediction UI
-void UIManager::RenderWastePredictionUI()
-{
-    ImGui::Text("Waste Level Prediction using Machine Learning");
-    ImGui::TextWrapped(
-        "This tool uses a neural network model to predict future waste levels based on historical data. "
-        "It takes into account day of week, day of month, and previous levels to generate accurate forecasts."
-    );
-
-    ImGui::Separator();
-
-    // Prediction controls
-    static int daysAhead = 7;
-    ImGui::Text("Forecast Days:");
-    ImGui::SliderInt("##forecast_days", &daysAhead, 1, 30, "%d days");
-
-    if (ImGui::Button("Generate Forecast")) {
-        // Generate forecast
-        m_application->PredictFutureWasteLevels(daysAhead);
-    }
-
-    ImGui::SameLine();
-
-    if (ImGui::Button("Train Model")) {
-        // Train the model
-        if (m_application->GetWasteLevelPredictor()) {
-            m_application->GetWasteLevelPredictor()->TrainNeuralNetwork(100);
-        }
-    }
-
-    ImGui::Separator();
-
-    // Plot forecasts
-    if (ImPlot::BeginPlot("Waste Level Forecast", ImVec2(-1, 400))) {
-        // IMPORTANT: Call setup functions AFTER BeginPlot but BEFORE any Plot functions
-        ImPlot::SetupAxes("Days Ahead", "Waste Level (%)");
-        ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 100);
-
-        // Get forecast data from AI component
-        WasteLevelPredictor* predictor = m_application->GetWasteLevelPredictor();
-
-        if (predictor) {
-            auto forecasts = predictor->GenerateForecasts(daysAhead);
-
-            // X-axis: days
-            double x[31]; // current day + forecast days
-            for (int i = 0; i <= daysAhead; i++) {
-                x[i] = i;
-            }
-
-            // For each location, plot a line
-            for (const auto& pair : forecasts) {
-                if (pair.first != "Station") {
-                    const std::vector<float>& levels = pair.second;
-
-                    // Convert to double for ImPlot
-                    double y[31];
-                    for (size_t i = 0; i < levels.size(); i++) {
-                        y[i] = levels[i];
-                    }
-
-                    // Plot line
-                    ImPlot::PlotLine(pair.first.c_str(), x, y, levels.size());
-                }
-            }
-
-            // Plot threshold lines
-            double x_thresholds[2] = { 0, static_cast<double>(daysAhead) };
-            double y_60[2] = { 60.0, 60.0 };
-            double y_40[2] = { 40.0, 40.0 };
-
-            ImPlot::PushStyleColor(ImPlotCol_Line, ImVec4(1, 0, 0, 1));
-            ImPlot::PlotLine("60% Threshold", x_thresholds, y_60, 2);
-            ImPlot::PopStyleColor();
-
-            ImPlot::PushStyleColor(ImPlotCol_Line, ImVec4(1, 1, 0, 1));
-            ImPlot::PlotLine("40% Threshold", x_thresholds, y_40, 2);
-            ImPlot::PopStyleColor();
-        }
-
-        ImPlot::EndPlot();
-    }
-
-    ImGui::Separator();
-
-    // Recommended collection days
-    ImGui::Text("Recommended Collection Days:");
-
-    ImGui::Columns(2, "collection_days");
-    ImGui::Text("Location"); ImGui::NextColumn();
-    ImGui::Text("Collection Recommended In"); ImGui::NextColumn();
-    ImGui::Separator();
-
-    // Get recommended collection days from AI component
-    WasteLevelPredictor* predictor = m_application->GetWasteLevelPredictor();
-
-    if (predictor) {
-        for (const auto& pair : WasteLocation::dict_Name_toId) {
-            if (pair.first != "Station") {
-                ImGui::Text("%s", pair.first.c_str());
-                ImGui::NextColumn();
-
-                int days = predictor->GetRecommendedCollectionDay(pair.first, 60.0f);
-
-                if (days == 0) {
-                    ImGui::TextColored(ImVec4(1, 0, 0, 1), "URGENT: Today");
-                }
-                else if (days > 0) {
-                    ImGui::Text("%d days", days);
-                }
-                else {
-                    ImGui::Text("Unknown");
-                }
-
-                ImGui::NextColumn();
-            }
-        }
-    }
-
-    ImGui::Columns(1);
-}
-
-// Render route learning UI
-void UIManager::RenderRouteLearningUI()
-{
-    ImGui::Text("Route Learning Agent");
-    ImGui::TextWrapped(
-        "This tool uses reinforcement learning to optimize waste collection routes based on past experiences. "
-        "It learns which routes are most efficient and adapts to changing conditions."
-    );
-
-    ImGui::Separator();
-
-    // Learning controls
-    static int trainingIterations = 100;
-    ImGui::Text("Training Iterations:");
-    ImGui::SliderInt("##training_iterations", &trainingIterations, 10, 1000);
-
-    if (ImGui::Button("Train Route Agent")) {
-        // Train the agent
-    }
-
-    ImGui::SameLine();
-
-    if (ImGui::Button("Apply Learned Routes")) {
-        // Apply learned routes
-        m_application->OptimizeWithAI();
-    }
-
-    ImGui::Separator();
-
-    // Learning progress visualization
-    ImGui::Text("Learning Progress:");
-
-    // Simulated learning curve
-    static float progress = 100;
-    static float learningData[100];
-
-    for (int i = 0; i < 100; i++) {
-        learningData[i] = 100.0f - 50.0f * (1.0f - expf(-i / 20.0f)) + 10.0f * sinf(i * 0.2f);
-    }
-
-    // Plot learning curve
-    if (ImPlot::BeginPlot("Learning Curve", ImVec2(-1, 300))) {
-        // IMPORTANT: Call setup functions AFTER BeginPlot but BEFORE any Plot functions
-        ImPlot::SetupAxes("Training Iterations", "Route Cost (RM)");
-
-        double x[100];
-        for (int i = 0; i < 100; i++) {
-            x[i] = (float)i;
-        }
-
-        ImPlot::PlotLine("Cost", (const float*)x, (const float*)learningData, 100);
-
-        ImPlot::EndPlot();
-    }
-
-    ImGui::ProgressBar(progress / 100.0f, ImVec2(-1, 0), "Training Progress");
-
-    ImGui::Separator();
-
-    // Q-value visualization
-    ImGui::Text("Q-Value Map (Route Segment Values):");
-
-    // Simple Q-value visualization as a heatmap
-    static float qValues[8][8];
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (WasteLocation::map_distance_matrix[i][j] < INF) {
-                qValues[i][j] = 0.5f + 0.5f * sinf(i * 0.5f + j * 0.3f);
-            }
-            else {
-                qValues[i][j] = 0.0f;
-            }
-        }
-    }
-
-    // Display Q-values as a table with colors
-    ImGui::BeginTable("Q-Values", 8, ImGuiTableFlags_Borders);
-
-    // Header row
-    ImGui::TableNextRow();
-    for (int j = 0; j < 8; j++) {
-        ImGui::TableNextColumn();
-        ImGui::Text("%s", WasteLocation::dict_Id_to_Name[j].c_str());
-    }
-
-    // Data rows
-    for (int i = 0; i < 8; i++) {
-        ImGui::TableNextRow();
-
-        for (int j = 0; j < 8; j++) {
-            ImGui::TableNextColumn();
-
-            if (WasteLocation::map_distance_matrix[i][j] < INF) {
-                // Color based on Q-value
-                ImVec4 color(
-                    1.0f - qValues[i][j],
-                    qValues[i][j],
-                    0.0f,
-                    1.0f
-                );
-
-                ImGui::TextColored(color, "%.2f", qValues[i][j]);
-            }
-            else {
-                ImGui::TextDisabled("-");
-            }
-        }
-    }
-
-    ImGui::EndTable();
-}
-
-// Render location clustering UI
-void UIManager::RenderLocationClusteringUI()
-{
-    ImGui::Text("Location Clustering");
-    ImGui::TextWrapped(
-        "This tool uses K-means clustering to group waste locations for more efficient collection. "
-        "It identifies natural clusters based on proximity and waste levels."
-    );
-
-    ImGui::Separator();
-
-    // Clustering controls
-    static int numClusters = 3;
-    ImGui::Text("Number of Clusters:");
-    ImGui::SliderInt("##num_clusters", &numClusters, 2, 5);
-
-    if (ImGui::Button("Generate Clusters")) {
-        // Generate clusters
-    }
-
-    ImGui::SameLine();
-
-    if (ImGui::Button("Apply Clustered Route")) {
-        // Apply clustered route
-    }
-
-    ImGui::Separator();
-
-    // Cluster visualization
-    ImGui::Text("Location Clusters:");
-
-    // Map display similar to main map but with cluster colors
-    ImVec2 windowSize = ImGui::GetContentRegionAvail();
-    ImVec2 mapSize(windowSize.x, 400);
-
-    ImDrawList* drawList = ImGui::GetWindowDrawList();
-    ImVec2 canvasPos = ImGui::GetCursorScreenPos();
-
-    // Background
-    drawList->AddRectFilled(canvasPos,
-        ImVec2(canvasPos.x + mapSize.x, canvasPos.y + mapSize.y),
-        IM_COL32(30, 30, 40, 255));
-
-    // Cluster colors
-    ImU32 clusterColors[] = {
-        IM_COL32(255, 0, 0, 200),   // Red
-        IM_COL32(0, 255, 0, 200),   // Green
-        IM_COL32(0, 0, 255, 200),   // Blue
-        IM_COL32(255, 255, 0, 200), // Yellow
-        IM_COL32(255, 0, 255, 200)  // Magenta
-    };
-
-    // Center and scale the map
-    float scaleX = mapSize.x / 500.0f;
-    float scaleY = mapSize.y / 500.0f;
-    float scale = std::min(scaleX, scaleY);
-
-    float offsetX = canvasPos.x + (mapSize.x - 500.0f * scale) * 0.5f;
-    float offsetY = canvasPos.y + (mapSize.y - 500.0f * scale) * 0.5f;
-
-    // Draw roads
-    ImU32 roadColor = IM_COL32(150, 150, 150, 200);
-    float roadThickness = 2.0f;
-
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (WasteLocation::map_distance_matrix[i][j] < INF) {
-                // Draw road from location i to j
-                ImVec2 p1(
-                    offsetX + WasteLocation::location_coordinates[i][0] * scale,
-                    offsetY + WasteLocation::location_coordinates[i][1] * scale
-                );
-
-                ImVec2 p2(
-                    offsetX + WasteLocation::location_coordinates[j][0] * scale,
-                    offsetY + WasteLocation::location_coordinates[j][1] * scale
-                );
-
-                drawList->AddLine(p1, p2, roadColor, roadThickness);
-            }
-        }
-    }
-
-    // Simulated cluster assignments (random for demo)
-    int clusterAssignments[] = { 0, 0, 1, 1, 2, 2, 0, 1 };
-
-    // Draw clusters
-    for (int c = 0; c < numClusters; c++) {
-        // Find convex hull of cluster points
-        std::vector<ImVec2> clusterPoints;
-
-        for (int i = 0; i < 8; i++) {
-            if (clusterAssignments[i] == c) {
-                ImVec2 pos(
-                    offsetX + WasteLocation::location_coordinates[i][0] * scale,
-                    offsetY + WasteLocation::location_coordinates[i][1] * scale
-                );
-
-                clusterPoints.push_back(pos);
-            }
-        }
-
-        // Draw cluster region if it has points
-        if (!clusterPoints.empty()) {
-            // For demo, just draw connecting lines between points
-            for (size_t i = 0; i < clusterPoints.size(); i++) {
-                for (size_t j = i + 1; j < clusterPoints.size(); j++) {
-                    drawList->AddLine(
-                        clusterPoints[i],
-                        clusterPoints[j],
-                        clusterColors[c],
-                        1.0f
-                    );
-                }
-            }
-        }
-    }
-
-    // Draw locations with cluster colors
-    for (int i = 0; i < 8; i++) {
-        ImVec2 pos(
-            offsetX + WasteLocation::location_coordinates[i][0] * scale,
-            offsetY + WasteLocation::location_coordinates[i][1] * scale
-        );
-
-        // Determine color based on cluster
-        ImU32 color;
-        float radius;
-
-        if (i == 0) {
-            // Station
-            color = IM_COL32(255, 165, 0, 255); // Orange
-            radius = 15.0f;
-        }
-        else {
-            // Use cluster color
-            color = clusterColors[clusterAssignments[i]];
-            radius = 10.0f;
-        }
-
-        // Draw location
-        drawList->AddCircleFilled(pos, radius, color);
-        drawList->AddCircle(pos, radius, IM_COL32(255, 255, 255, 200), 0, 2.0f);
-
-        // Draw location label
-        std::string name = WasteLocation::dict_Id_to_Name[i];
-        drawList->AddText(
-            ImVec2(pos.x - 5.0f, pos.y - 25.0f),
-            IM_COL32(255, 255, 255, 255),
-            name.c_str()
-        );
-    }
-
-    // Reset cursor position
-    ImGui::SetCursorScreenPos(canvasPos);
-    ImGui::Dummy(mapSize);
-
-    ImGui::Separator();
-
-    // Cluster information
-    ImGui::Text("Cluster Analysis:");
-
-    // Display cluster details in a table
-    ImGui::BeginTable("Cluster Info", 4, ImGuiTableFlags_Borders);
-
-    // Header
-    ImGui::TableNextRow();
-    ImGui::TableNextColumn(); ImGui::Text("Cluster");
-    ImGui::TableNextColumn(); ImGui::Text("Locations");
-    ImGui::TableNextColumn(); ImGui::Text("Avg. Waste Level");
-    ImGui::TableNextColumn(); ImGui::Text("Total Distance");
-
-    // Data rows
-    for (int c = 0; c < numClusters; c++) {
-        ImGui::TableNextRow();
-
-        // Cluster number
-        ImGui::TableNextColumn();
-        ImGui::TextColored(
-            ImVec4(
-                ((clusterColors[c] >> 0) & 0xFF) / 255.0f,
-                ((clusterColors[c] >> 8) & 0xFF) / 255.0f,
-                ((clusterColors[c] >> 16) & 0xFF) / 255.0f,
-                1.0f
-            ),
-            "Cluster %d", c + 1
-        );
-
-        // Locations in cluster
-        ImGui::TableNextColumn();
-        std::string locations;
-        int count = 0;
-
-        for (int i = 1; i < 8; i++) {
-            if (clusterAssignments[i] == c) {
-                if (count > 0) {
-                    locations += ", ";
-                }
-                locations += WasteLocation::dict_Id_to_Name[i];
-                count++;
-            }
-        }
-
-        ImGui::Text("%s", locations.c_str());
-
-        // Average waste level (simulated)
-        ImGui::TableNextColumn();
-        ImGui::Text("%.1f%%", 40.0f + 20.0f * c);
-
-        // Total distance (simulated)
-        ImGui::TableNextColumn();
-        ImGui::Text("%.2f km", 10.0f + 5.0f * c);
-    }
-
-    ImGui::EndTable();
 }
 
 // Render the settings window
@@ -1019,46 +375,8 @@ void UIManager::RenderSettingsWindow()
 {
     ImGui::Begin("Settings", &m_showSettingsWindow);
 
-    ImGui::Text("Application Settings");
-    ImGui::Separator();
-
-    // UI settings
-    ImGui::Text("UI Settings:");
-
-    static bool darkTheme = true;
-    if (ImGui::Checkbox("Dark Theme", &darkTheme)) {
-        if (darkTheme) {
-            ImGui::StyleColorsDark();
-        }
-        else {
-            ImGui::StyleColorsLight();
-        }
-
-        // Update style
-        SetupImGuiStyle();
-    }
-
-    // Simulation settings
-    ImGui::Separator();
-    ImGui::Text("Simulation Settings:");
-
-    static float fuelCostPerKm = 1.5f;
-    ImGui::SliderFloat("Fuel Cost (RM/km)", &fuelCostPerKm, 0.5f, 3.0f, "%.2f");
-
-    static float driverWagePerHour = 5.77f;
-    ImGui::SliderFloat("Driver Wage (RM/hour)", &driverWagePerHour, 3.0f, 10.0f, "%.2f");
-
-    static float drivingSpeedMinPerKm = 1.5f;
-    ImGui::SliderFloat("Driving Speed (min/km)", &drivingSpeedMinPerKm, 1.0f, 3.0f, "%.2f");
-
-    // About section
-    ImGui::Separator();
-    ImGui::Text("About:");
-    ImGui::TextWrapped(
-        "Waste Management System v1.0\n"
-        "Developed for COMP2034 Coursework 2\n"
-        "© 2025"
-    );
+    // 使用SettingsPanel组件渲染设置
+    m_settingsPanel->Render(m_darkTheme);
 
     ImGui::End();
 }
@@ -1139,4 +457,78 @@ void UIManager::HandleResize(int width, int height)
 {
     m_windowWidth = width;
     m_windowHeight = height;
+}
+
+// Toggle dark/light theme
+void UIManager::ToggleTheme()
+{
+    m_darkTheme = !m_darkTheme;
+    SetupImGuiStyle();
+}
+
+// Save UI configuration to file
+void UIManager::SaveConfiguration(const std::string& filename)
+{
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file for saving configuration: " << filename << std::endl;
+        return;
+    }
+
+    // Write UI settings
+    file << "darkTheme=" << (m_darkTheme ? "true" : "false") << std::endl;
+    file << "fontScale=" << m_fontScale << std::endl;
+    file << "showMapWindow=" << (m_showMapWindow ? "true" : "false") << std::endl;
+    file << "showDetailsWindow=" << (m_showDetailsWindow ? "true" : "false") << std::endl;
+    file << "showComparisonWindow=" << (m_showComparisonWindow ? "true" : "false") << std::endl;
+    file << "showAIWindow=" << (m_showAIWindow ? "true" : "false") << std::endl;
+    file << "showSettingsWindow=" << (m_showSettingsWindow ? "true" : "false") << std::endl;
+
+    file.close();
+}
+
+// Load UI configuration from file
+void UIManager::LoadConfiguration(const std::string& filename)
+{
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file for loading configuration: " << filename << std::endl;
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string key, value;
+
+        if (std::getline(iss, key, '=') && std::getline(iss, value)) {
+            // Parse UI settings
+            if (key == "darkTheme") {
+                m_darkTheme = (value == "true");
+            }
+            else if (key == "fontScale") {
+                m_fontScale = std::stof(value);
+            }
+            else if (key == "showMapWindow") {
+                m_showMapWindow = (value == "true");
+            }
+            else if (key == "showDetailsWindow") {
+                m_showDetailsWindow = (value == "true");
+            }
+            else if (key == "showComparisonWindow") {
+                m_showComparisonWindow = (value == "true");
+            }
+            else if (key == "showAIWindow") {
+                m_showAIWindow = (value == "true");
+            }
+            else if (key == "showSettingsWindow") {
+                m_showSettingsWindow = (value == "true");
+            }
+        }
+    }
+
+    file.close();
+
+    // Apply loaded settings
+    SetupImGuiStyle();
 }

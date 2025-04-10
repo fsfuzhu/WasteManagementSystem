@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\WasteManagementSystem;vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui\backends;vendor\imgui;vendor;$(IncludePath)</IncludePath>
+    <IncludePath>src;..\WasteManagementSystem;vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui\backends;vendor\imgui;vendor;$(IncludePath)</IncludePath>
     <LibraryPath>vendor\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\WasteManagementSystem;vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui\backends;vendor\imgui;vendor;$(IncludePath)</IncludePath>
+    <IncludePath>src;..\WasteManagementSystem;vendor\glfw\include;vendor\glad\include;vendor\ImPlot;vendor\imgui\backends;vendor\imgui;vendor;$(IncludePath)</IncludePath>
     <LibraryPath>vendor\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -164,6 +164,7 @@
     <ClCompile Include="src\UI\MainWindow.cpp" />
     <ClCompile Include="src\UI\MapVisualization.cpp" />
     <ClCompile Include="src\UI\RouteComparisonPanel.cpp" />
+    <ClCompile Include="src\UI\RouteDetailsPanel.cpp" />
     <ClCompile Include="src\UI\UIManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
@@ -195,9 +196,13 @@
     <ClInclude Include="src\Core\Route.h" />
     <ClInclude Include="src\Core\TSPRoute.h" />
     <ClInclude Include="src\Core\WasteLocation.h" />
+    <ClInclude Include="src\UI\AIToolsPanel.h" />
     <ClInclude Include="src\UI\MainWindow.h" />
     <ClInclude Include="src\UI\MapVisualization.h" />
     <ClInclude Include="src\UI\RouteComparisonPanel.h" />
+    <ClInclude Include="src\UI\RouteDetailsPanel.h" />
+    <ClInclude Include="src\UI\SettingsPanel.h" />
+    <ClInclude Include="src\UI\UIHelpers.h" />
     <ClInclude Include="src\UI\UIManager.h" />
     <ClInclude Include="src\Utils\FileIO.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />

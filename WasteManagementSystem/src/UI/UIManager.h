@@ -1,20 +1,18 @@
 // UIManager.h
 // This file manages the ImGui user interface for the waste management system
 #pragma once
-
-#include <memory>
-#include <string>
-#include <vector>
-
 // Forward declarations
 struct GLFWwindow;
 class Application;
 
-// Include the full class definitions for these components
-// This fixes the incomplete type error with std::unique_ptr
-#include "MainWindow.h"
-#include "MapVisualization.h"
-#include "RouteComparisonPanel.h"
+// Include the component definitions
+#include "UI/MainWindow.h"
+#include "UI/MapVisualization.h"
+#include "UI/RouteComparisonPanel.h"
+#include "UI/RouteDetailsPanel.h"
+#include "UI/AIToolsPanel.h"
+#include "UI/SettingsPanel.h"
+#include "UI/UIHelpers.h"
 
 /**
  * @brief Manages the ImGui-based user interface
@@ -23,12 +21,15 @@ class UIManager {
 private:
     /* Private members in UIManager class */
     Application* m_application;                       // Pointer to application
-    GLFWwindow* m_window;                            // GLFW window handle
+    GLFWwindow* m_window;                             // GLFW window handle
 
     // UI components
     std::unique_ptr<MainWindow> m_mainWindow;
     std::unique_ptr<MapVisualization> m_mapVisualization;
     std::unique_ptr<RouteComparisonPanel> m_routeComparisonPanel;
+    std::unique_ptr<RouteDetailsPanel> m_routeDetailsPanel;
+    std::unique_ptr<AIToolsPanel> m_aiToolsPanel;
+    std::unique_ptr<SettingsPanel> m_settingsPanel;
 
     // UI state
     bool m_showMapWindow;
@@ -36,6 +37,8 @@ private:
     bool m_showComparisonWindow;
     bool m_showAIWindow;
     bool m_showSettingsWindow;
+    bool m_darkTheme;
+    float m_fontScale;
 
     // Window size and position tracking
     int m_windowWidth;
@@ -54,11 +57,6 @@ private:
     void RenderAIWindow();
     void RenderSettingsWindow();
     void RenderStatusBar();
-
-    // Helper functions for AI UI
-    void RenderWastePredictionUI();
-    void RenderRouteLearningUI();
-    void RenderLocationClusteringUI();
 
 public:
     UIManager(Application* application);
@@ -98,4 +96,21 @@ public:
      * @param height New window height
      */
     void HandleResize(int width, int height);
+
+    /**
+     * @brief Toggle dark/light theme
+     */
+    void ToggleTheme();
+
+    /**
+     * @brief Save UI configuration to file
+     * @param filename File to save to
+     */
+    void SaveConfiguration(const std::string& filename);
+
+    /**
+     * @brief Load UI configuration from file
+     * @param filename File to load from
+     */
+    void LoadConfiguration(const std::string& filename);
 };

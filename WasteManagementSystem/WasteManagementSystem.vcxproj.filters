@@ -139,6 +139,9 @@
     <ClCompile Include="pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\UI\RouteDetailsPanel.cpp">
+      <Filter>src\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\OptimizedRoute.h">
@@ -236,6 +239,18 @@
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\AIToolsPanel.h">
+      <Filter>src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\RouteDetailsPanel.h">
+      <Filter>src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\SettingsPanel.h">
+      <Filter>src\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UIHelpers.h">
+      <Filter>src\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
