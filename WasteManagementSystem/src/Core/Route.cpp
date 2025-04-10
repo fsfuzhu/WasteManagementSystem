@@ -31,11 +31,11 @@ void Route::CalculateCosts()
     // Calculate time taken (1.5 minutes per km)
     m_timeTaken = 1.5f * m_totalDistance;
 
-    // Calculate fuel consumption (RM 1.5 per km)
-    m_fuelConsumption = 1.5f * m_totalDistance;
+    // Calculate fuel consumption (RM 2.50 per km) - 修改后的燃油消耗计算
+    m_fuelConsumption = 2.50f * m_totalDistance;
 
-    // Calculate wage (RM 5.77 per hour)
-    m_wage = 5.77f * (m_timeTaken / 60.0f);
+    // Calculate wage (RM 10.00 per hour) - 修改后的工资计算
+    m_wage = 10.00f * (m_timeTaken / 60.0f);
 
     // Calculate total cost
     m_totalCost = m_fuelConsumption + m_wage;

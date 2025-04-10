@@ -3,6 +3,9 @@
 #include "pch.h"
 #include "WasteLocation.h"
 
+// Initialize static distance matrix
+float WasteLocation::map_distance_matrix[8][8];
+
 // Constructor
 WasteLocation::WasteLocation(const std::string& name)
     : m_locationName(name)
@@ -65,5 +68,41 @@ std::vector<WasteLocation> WasteLocation::InitializeWasteLocations()
     locations.push_back(WasteLocation("F"));
     locations.push_back(WasteLocation("G"));
 
+    // Initialize distance matrix
+    InitializeDistanceMatrix();
+
     return locations;
+}
+
+// Calculate direct distance between two locations based on coordinates
+float WasteLocation::CalculateDirectDistance(int fromId, int toId)
+{
+    if (fromId == toId) {
+        return 0.0f; // Distance to self is 0
+    }
+
+    // Get coordinates
+    float x1 = location_coordinates[fromId][0];
+    float y1 = location_coordinates[fromId][1];
+    float x2 = location_coordinates[toId][0];
+    float y2 = location_coordinates[toId][1];
+
+    // Calculate euclidean distance
+    float dx = x2 - x1;
+    float dy = y2 - y1;
+    float distance = std::sqrt(dx * dx + dy * dy) / 50.0f; // Scale factor to get reasonable distances in km
+
+    // Round to 1 decimal place
+    return std::round(distance * 10.0f) / 10.0f;
+}
+
+// Initialize distance matrix with direct distances
+void WasteLocation::InitializeDistanceMatrix()
+{
+    // Calculate distances between all pairs of locations
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            map_distance_matrix[i][j] = CalculateDirectDistance(i, j);
+        }
+    }
 }

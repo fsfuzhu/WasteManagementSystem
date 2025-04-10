@@ -9,14 +9,16 @@
 /**
  * @brief Optimized route using Floyd-Warshall algorithm
  * Only visits locations where waste level >= threshold (60%)
+ * and distance <= 20km from station
  */
 class OptimizedRoute : public Route {
 private:
     /* Private members in OptimizedRoute class */
     std::vector<int> m_filteredDestinations;   // Locations that need collection
     bool m_pickupRequired;                     // Whether any pickup is needed
+    const float m_maxDistanceFromStation = 20.0f;  // Maximum distance from station (km)
 
-    // Filter destinations by waste level
+    // Filter destinations by waste level and distance
     std::vector<int> FilterDestinationsByWasteLevel(const std::vector<WasteLocation>& locations);
 
     // Reconstruct shortest path between two nodes
@@ -48,6 +50,7 @@ public:
 
     /**
      * @brief Calculate optimized route visiting locations with waste level >= threshold
+     * and are within 20km from the station
      * @param locations Vector of waste locations
      * @return True if a valid route was found, false if no pickup needed
      */

@@ -19,33 +19,19 @@ OptimizedRoute::~OptimizedRoute()
 
 void OptimizedRoute::InitializeFloydWarshall()
 {
-    // Initialize shortest route matrix
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            s_shortestRouteMatrix[i][j] = j;
-        }
-    }
+    // 由于我们现在使用直线距离，所有点之间都可以直接连接
+    // Floyd-Warshall算法不再需要用于寻找中间节点
+    // 但为了保持代码兼容性，我们仍然复制距离矩阵到s_floydWarshallMatrix
 
     // Copy distance matrix to floyd warshall matrix
     memcpy(&s_floydWarshallMatrix, &WasteLocation::map_distance_matrix,
         sizeof(WasteLocation::map_distance_matrix));
 
-    // Run Floyd-Warshall algorithm to find shortest paths between all pairs
-    for (int k = 0; k < 8; k++) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                // If path through k is shorter than current path
-                if (s_floydWarshallMatrix[i][j] >
-                    s_floydWarshallMatrix[i][k] + s_floydWarshallMatrix[k][j]) {
-
-                    // Update distance
-                    s_floydWarshallMatrix[i][j] =
-                        s_floydWarshallMatrix[i][k] + s_floydWarshallMatrix[k][j];
-
-                    // Update next node in shortest path
-                    s_shortestRouteMatrix[i][j] = s_shortestRouteMatrix[i][k];
-                }
-            }
+    // Initialize shortest route matrix
+    // 在直接连接的情况下，最短路径总是直接从一点到另一点
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            s_shortestRouteMatrix[i][j] = j;
         }
     }
 }
@@ -57,31 +43,19 @@ std::vector<int> OptimizedRoute::FilterDestinationsByWasteLevel(const std::vecto
     // Add station (starting point) first
     filteredDestinations.push_back(0);
 
-    // Add locations that meet the waste threshold
+    // Add locations that meet the waste threshold and are within distance limit
     for (const auto& location : locations) {
         if (location.GetWasteLevel() >= m_wasteThreshold) {
             int id = WasteLocation::dict_Name_toId[location.GetLocationName()];
-            filteredDestinations.push_back(id);
+
+            // 使用直线距离检查是否在最大距离范围内
+            if (id > 0 && WasteLocation::map_distance_matrix[0][id] <= m_maxDistanceFromStation) {
+                filteredDestinations.push_back(id);
+            }
         }
     }
 
     return filteredDestinations;
-}
-
-std::vector<int> OptimizedRoute::PathReconstruction(int start, int end, const int matrix[8][8])
-{
-    std::vector<int> path;
-
-    // Add start node
-    path.push_back(start);
-
-    // Follow the path from start to end
-    while (start != end) {
-        start = matrix[start][end];
-        path.push_back(start);
-    }
-
-    return path;
 }
 
 std::vector<int> OptimizedRoute::GenerateFullRoute(
@@ -105,7 +79,7 @@ std::vector<int> OptimizedRoute::GenerateFullRoute(
         float minDistance = INF;
 
         for (size_t i = 0; i < remainingDestinations.size(); i++) {
-            float distance = floydWarshallMatrix[currentLocation][remainingDestinations[i]];
+            float distance = WasteLocation::map_distance_matrix[currentLocation][remainingDestinations[i]];
             if (distance < minDistance) {
                 minDistance = distance;
                 nearestIndex = i;
@@ -115,19 +89,8 @@ std::vector<int> OptimizedRoute::GenerateFullRoute(
         // Get the next destination
         int nextLocation = remainingDestinations[nearestIndex];
 
-        // Get path from current location to next location
-        std::vector<int> subPath = PathReconstruction(currentLocation, nextLocation, shortestRouteMatrix);
-
-        // Skip the first node as it's already in the route
-        for (size_t i = 1; i < subPath.size(); i++) {
-            finalRoute.push_back(subPath[i]);
-
-            // If this intermediate location is also in our remaining destinations, remove it
-            auto it = std::find(remainingDestinations.begin(), remainingDestinations.end(), subPath[i]);
-            if (it != remainingDestinations.end() && *it != nextLocation) {
-                remainingDestinations.erase(it);
-            }
-        }
+        // 在直接连接的情况下，路径就是直接从当前位置到下一个位置
+        finalRoute.push_back(nextLocation);
 
         // Update current location
         currentLocation = nextLocation;
@@ -136,13 +99,10 @@ std::vector<int> OptimizedRoute::GenerateFullRoute(
         remainingDestinations.erase(remainingDestinations.begin() + nearestIndex);
     }
 
-    // Return to station if we visited any locations
+    // Return to station if we visited any locations (for TSP-like routes)
+    // 这里可以根据需要决定是否需要返回起点
     if (finalRoute.size() > 1) {
-        std::vector<int> returnPath = PathReconstruction(currentLocation, 0, shortestRouteMatrix);
-        // Skip the first node as it's already in the route
-        for (size_t i = 1; i < returnPath.size(); i++) {
-            finalRoute.push_back(returnPath[i]);
-        }
+        finalRoute.push_back(0); // Return to station
     }
 
     return finalRoute;
@@ -159,7 +119,7 @@ bool OptimizedRoute::CalculateRoute(const std::vector<WasteLocation>& locations)
     m_wage = 0.0f;
     m_totalCost = 0.0f;
 
-    // Filter destinations based on waste level
+    // Filter destinations based on waste level and distance
     m_filteredDestinations = FilterDestinationsByWasteLevel(locations);
 
     // Check if any locations need pickup (besides the station)
@@ -178,8 +138,8 @@ bool OptimizedRoute::CalculateRoute(const std::vector<WasteLocation>& locations)
         int fromId = m_finalRoute[i];
         int toId = m_finalRoute[i + 1];
 
-        // Get distance from floyd warshall matrix
-        float distance = s_floydWarshallMatrix[fromId][toId];
+        // Get distance from distance matrix
+        float distance = WasteLocation::map_distance_matrix[fromId][toId];
         m_individualDistances.push_back(distance);
     }
 

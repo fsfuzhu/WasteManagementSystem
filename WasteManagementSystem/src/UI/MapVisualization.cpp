@@ -3,9 +3,6 @@
 #include "pch.h"
 #include "MapVisualization.h"
 
-// MapVisualization.cpp
-// Improved implementation to fix overlapping labels and markers
-
 void MapVisualization::Render(const std::vector<WasteLocation>& locations, const Route* route) {
     if (locations.empty())
         return;
@@ -47,71 +44,7 @@ void MapVisualization::Render(const std::vector<WasteLocation>& locations, const
     float offsetX = canvasPos.x + (canvasSize.x - 500.0f * scale) * 0.5f;
     float offsetY = canvasPos.y + (canvasSize.y - 500.0f * scale) * 0.5f;
 
-    // Draw roads first (so they're behind everything else)
-    ImU32 roadColor = IM_COL32(150, 150, 150, 200);
-    float roadThickness = 3.0f;
-
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (WasteLocation::map_distance_matrix[i][j] < INF) {
-                // Get positions of the two locations
-                ImVec2 p1(
-                    offsetX + WasteLocation::location_coordinates[i][0] * scale,
-                    offsetY + WasteLocation::location_coordinates[i][1] * scale
-                );
-
-                ImVec2 p2(
-                    offsetX + WasteLocation::location_coordinates[j][0] * scale,
-                    offsetY + WasteLocation::location_coordinates[j][1] * scale
-                );
-
-                // Draw road
-                drawList->AddLine(p1, p2, roadColor, roadThickness);
-
-                // Calculate distance label position with offset from the midpoint
-                // to avoid overlapping with the location markers
-                ImVec2 direction(p2.x - p1.x, p2.y - p1.y);
-                float length = sqrtf(direction.x * direction.x + direction.y * direction.y);
-
-                // Normalize the direction vector
-                if (length > 0) {
-                    direction.x /= length;
-                    direction.y /= length;
-                }
-
-                // Calculate perpendicular vector for offset
-                ImVec2 perpendicular(-direction.y, direction.x);
-
-                // Calculate the midpoint
-                ImVec2 midpoint(
-                    (p1.x + p2.x) * 0.5f,
-                    (p1.y + p2.y) * 0.5f
-                );
-
-                // Apply a small offset perpendicular to the road
-                float offsetDistance = 15.0f; // Adjust as needed
-                ImVec2 labelPos(
-                    midpoint.x + perpendicular.x * offsetDistance,
-                    midpoint.y + perpendicular.y * offsetDistance
-                );
-
-                // Convert distance to string
-                char distStr[16];
-                snprintf(distStr, sizeof(distStr), "%.1f", WasteLocation::map_distance_matrix[i][j]);
-
-                // Draw distance label with background for better visibility
-                ImVec2 textSize = ImGui::CalcTextSize(distStr);
-                drawList->AddRectFilled(
-                    ImVec2(labelPos.x - 2, labelPos.y - 2),
-                    ImVec2(labelPos.x + textSize.x + 2, labelPos.y + textSize.y + 2),
-                    IM_COL32(0, 0, 0, 180)
-                );
-                drawList->AddText(labelPos, IM_COL32(255, 255, 255, 255), distStr);
-            }
-        }
-    }
-
-    // Draw route if available (above roads, below locations)
+    // Draw route if available (ONLY show the green route)
     if (route) {
         const std::vector<int>& routePath = route->GetFinalRoute();
 
@@ -175,11 +108,34 @@ void MapVisualization::Render(const std::vector<WasteLocation>& locations, const
                     IM_COL32(255, 255, 255, 255),
                     orderStr
                 );
+
+                // Add distance label
+                char distStr[16];
+                snprintf(distStr, sizeof(distStr), "%.1f", WasteLocation::map_distance_matrix[from][to]);
+
+                ImVec2 distPos(
+                    p1.x + (p2.x - p1.x) * 0.5f,
+                    p1.y + (p2.y - p1.y) * 0.5f - 20.0f
+                );
+
+                // Background for distance label
+                ImVec2 distTextSize = ImGui::CalcTextSize(distStr);
+                drawList->AddRectFilled(
+                    ImVec2(distPos.x - distTextSize.x * 0.5f - 2, distPos.y - 2),
+                    ImVec2(distPos.x + distTextSize.x * 0.5f + 2, distPos.y + distTextSize.y + 2),
+                    IM_COL32(0, 0, 0, 180)
+                );
+
+                drawList->AddText(
+                    ImVec2(distPos.x - distTextSize.x * 0.5f, distPos.y),
+                    IM_COL32(255, 255, 255, 255),
+                    distStr
+                );
             }
         }
     }
 
-    // Finally, draw waste locations and their labels on top
+    // Draw waste locations and their labels on top
     for (size_t i = 0; i < 8; i++) {
         ImVec2 pos(
             offsetX + WasteLocation::location_coordinates[i][0] * scale,
@@ -243,7 +199,7 @@ void MapVisualization::Render(const std::vector<WasteLocation>& locations, const
             name += " (" + std::to_string(static_cast<int>(wasteLevel)) + "%)";
         }
 
-        // Draw location label above the marker (moved up from -35 to -45)
+        // Draw location label above the marker
         ImVec2 textSize = ImGui::CalcTextSize(name.c_str());
         ImVec2 labelPos(pos.x - textSize.x * 0.5f, pos.y - radius - textSize.y - 5.0f);
 

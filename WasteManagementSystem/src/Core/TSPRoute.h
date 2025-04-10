@@ -12,6 +12,7 @@
  * @brief TSP route using Nearest Neighbor and 2-opt optimization
  * Only visits locations where waste level >= threshold (40%)
  * and are within 15km from the station
+ * Must return to the starting point (closed loop)
  */
 class TSPRoute : public Route {
 private:

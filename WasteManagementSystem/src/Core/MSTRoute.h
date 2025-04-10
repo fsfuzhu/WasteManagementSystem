@@ -12,6 +12,7 @@
  * @brief MST route using Prim's algorithm
  * Only visits locations where waste level >= threshold (40%)
  * and are within 15km from the station
+ * MST route does NOT need to return to the starting point
  */
 class MSTRoute : public Route {
 private:

@@ -44,21 +44,15 @@ public:
      */
     static std::vector<WasteLocation> InitializeWasteLocations();
 
-    /* Static public variables shared across all instances of WasteLocation class */
+    /**
+     * @brief Calculate direct distance between two locations based on coordinates
+     * @param fromId Index of the first location
+     * @param toId Index of the second location
+     * @return Direct distance in km
+     */
+    static float CalculateDirectDistance(int fromId, int toId);
 
-    // Distance matrix between locations [from][to] = distance
-    // Size is 8x8 for 7 waste locations + 1 station
-    // INF means no direct path between locations
-    static inline const float map_distance_matrix[8][8] = {
-        {0, 3, INF, INF, INF, INF, INF, 4},
-        {3, 0, INF, 6, INF, INF, INF, INF},
-        {INF, INF, 0, 5, 4, INF, INF, INF},
-        {INF, 6, 5, 0, 2, INF, 2, INF},
-        {INF, INF, 4, 2, 0, INF, INF, INF},
-        {INF, INF, INF, INF, INF, 0, 7, INF},
-        {INF, INF, INF, 2, INF, 7, 0, 3},
-        {4, INF, INF, INF, INF, INF, 3, 0}
-    };
+    /* Static public variables shared across all instances of WasteLocation class */
 
     // Dictionary to map location name to its index in the matrix
     static inline std::map<std::string, int> dict_Name_toId = {
@@ -95,4 +89,10 @@ public:
         {200, 300},  // F
         {100, 200}   // G
     };
+
+    // Distance matrix between locations will be calculated dynamically based on coordinates
+    static float map_distance_matrix[8][8];
+
+    // Initialize distance matrix with direct distances
+    static void InitializeDistanceMatrix();
 };
