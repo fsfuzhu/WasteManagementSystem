@@ -42,6 +42,10 @@ private:
     Route* m_currentRoute;
     int m_currentRouteIndex;
 
+    float m_fuelCostPerKm;      // 燃料成本 (RM/km)
+    float m_driverWagePerHour;  // 司机工资 (RM/hour)
+    float m_drivingSpeedMinPerKm; // 驾驶速度 (min/km)
+
     // AI components
     std::unique_ptr<WasteLevelPredictor> m_wasteLevelPredictor;
     std::unique_ptr<RouteLearningAgent> m_routeLearningAgent;
@@ -93,6 +97,14 @@ public:
     WasteLevelPredictor* GetWasteLevelPredictor() const;
     RouteLearningAgent* GetRouteLearningAgent() const;
     LocationClustering* GetLocationClustering() const;
+    float GetFuelCostPerKm() const { return m_fuelCostPerKm; }
+    float GetDriverWagePerHour() const { return m_driverWagePerHour; }
+    float GetDrivingSpeedMinPerKm() const { return m_drivingSpeedMinPerKm; }
+
+    void SetFuelCostPerKm(float value) { m_fuelCostPerKm = value; }
+    void SetDriverWagePerHour(float value) { m_driverWagePerHour = value; }
+    void SetDrivingSpeedMinPerKm(float value) { m_drivingSpeedMinPerKm = value; }
+
 
     // Route management
     void SelectRoute(int index);

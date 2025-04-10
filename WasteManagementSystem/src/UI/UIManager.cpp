@@ -428,6 +428,8 @@ void UIManager::RenderDetailsWindow()
 }
 
 // Render the route comparison window
+// 在文件 WasteManagementSystem/src/UI/UIManager.cpp 中
+
 void UIManager::RenderComparisonWindow()
 {
     ImGui::Begin("Route Comparison", &m_showComparisonWindow);
@@ -471,23 +473,26 @@ void UIManager::RenderComparisonWindow()
         ImPlot::SetupAxisTicks(ImAxis_X1, 0, 4, 5, labels, false);
 
         // Route costs
-        float distances[5] = { 0 };
+        float totalCosts[5] = { 0 };
         float fuelCosts[5] = { 0 };
         float wageCosts[5] = { 0 };
-        float totalCosts[5] = { 0 };
 
-        // Get route costs
-        if (m_application->GetCurrentRoute()) {
-            // Temporary - in a real implementation we would get all routes
-            totalCosts[m_application->GetCurrentRouteIndex()] =
-                m_application->GetCurrentRoute()->GetTotalCost();
-            distances[m_application->GetCurrentRouteIndex()] =
-                m_application->GetCurrentRoute()->GetTotalDistance();
-            fuelCosts[m_application->GetCurrentRouteIndex()] =
-                m_application->GetCurrentRoute()->GetFuelConsumption();
-            wageCosts[m_application->GetCurrentRouteIndex()] =
-                m_application->GetCurrentRoute()->GetWage();
+        // Get route costs - we'll need to temporarily switch routes to get data from each
+        int originalRouteIndex = m_application->GetCurrentRouteIndex();
+
+        // Capture each route's data
+        for (int i = 0; i < 5; i++) {
+            m_application->SelectRoute(i);
+            Route* route = m_application->GetCurrentRoute();
+            if (route) {
+                totalCosts[i] = route->GetTotalCost();
+                fuelCosts[i] = route->GetFuelConsumption();
+                wageCosts[i] = route->GetWage();
+            }
         }
+
+        // Restore original route selection
+        m_application->SelectRoute(originalRouteIndex);
 
         // Plot bar chart
         ImPlot::PlotBars("Total Cost (RM)", totalCosts, 5, 0.7f);
@@ -507,27 +512,36 @@ void UIManager::RenderComparisonWindow()
     ImGui::Text("Savings vs Non-Optimized (RM)"); ImGui::NextColumn();
     ImGui::Separator();
 
-    // Display savings for each route type
-    // In a real implementation, we would calculate actual savings
+    // Capture all routes' costs
+    float routeCosts[5] = { 0 };
+    int originalRouteIndex = m_application->GetCurrentRouteIndex();
+
+    for (int i = 0; i < 5; i++) {
+        m_application->SelectRoute(i);
+        Route* route = m_application->GetCurrentRoute();
+        if (route) {
+            routeCosts[i] = route->GetTotalCost();
+        }
+    }
+
+    // Restore original route
+    m_application->SelectRoute(originalRouteIndex);
+
+    float nonOptimizedCost = routeCosts[0];
+
+    // Display Non-Optimized row
     ImGui::Text("Non-Optimized"); ImGui::NextColumn();
-    ImGui::Text("100.00"); ImGui::NextColumn();
+    ImGui::Text("%.2f", nonOptimizedCost); ImGui::NextColumn();
     ImGui::Text("-"); ImGui::NextColumn();
 
-    ImGui::Text("Optimized"); ImGui::NextColumn();
-    ImGui::Text("75.50"); ImGui::NextColumn();
-    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "24.50"); ImGui::NextColumn();
-
-    ImGui::Text("MST"); ImGui::NextColumn();
-    ImGui::Text("82.75"); ImGui::NextColumn();
-    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "17.25"); ImGui::NextColumn();
-
-    ImGui::Text("TSP"); ImGui::NextColumn();
-    ImGui::Text("78.30"); ImGui::NextColumn();
-    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "21.70"); ImGui::NextColumn();
-
-    ImGui::Text("Greedy"); ImGui::NextColumn();
-    ImGui::Text("85.20"); ImGui::NextColumn();
-    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "14.80"); ImGui::NextColumn();
+    // Display other routes with actual savings
+    const char* routeNames[] = { "Optimized", "MST", "TSP", "Greedy" };
+    for (int i = 1; i < 5; i++) {
+        ImGui::Text("%s", routeNames[i - 1]); ImGui::NextColumn();
+        ImGui::Text("%.2f", routeCosts[i]); ImGui::NextColumn();
+        float savings = nonOptimizedCost - routeCosts[i];
+        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%.2f", savings); ImGui::NextColumn();
+    }
 
     ImGui::Columns(1);
 
@@ -1021,7 +1035,7 @@ void UIManager::RenderSettingsWindow()
     ImGui::Text("Application Settings");
     ImGui::Separator();
 
-    // UI settings
+    // UI设置
     ImGui::Text("UI Settings:");
 
     static bool darkTheme = true;
@@ -1033,30 +1047,57 @@ void UIManager::RenderSettingsWindow()
             ImGui::StyleColorsLight();
         }
 
-        // Update style
+        // 更新样式
         SetupImGuiStyle();
     }
 
-    // Simulation settings
+    // 模拟设置
     ImGui::Separator();
     ImGui::Text("Simulation Settings:");
 
-    static float fuelCostPerKm = 1.5f;
-    ImGui::SliderFloat("Fuel Cost (RM/km)", &fuelCostPerKm, 0.5f, 3.0f, "%.2f");
+    // 获取当前值
+    static float fuelCost = 1.5f;  // 默认值
+    static float driverWage = 5.77f;  // 默认值
+    static float drivingSpeed = 1.5f;  // 默认值
 
-    static float driverWagePerHour = 5.77f;
-    ImGui::SliderFloat("Driver Wage (RM/hour)", &driverWagePerHour, 3.0f, 10.0f, "%.2f");
+    // 首次初始化
+    static bool initialized = false;
+    if (!initialized && m_application) {
+        fuelCost = m_application->GetFuelCostPerKm();
+        driverWage = m_application->GetDriverWagePerHour();
+        drivingSpeed = m_application->GetDrivingSpeedMinPerKm();
+        initialized = true;
+    }
 
-    static float drivingSpeedMinPerKm = 1.5f;
-    ImGui::SliderFloat("Driving Speed (min/km)", &drivingSpeedMinPerKm, 1.0f, 3.0f, "%.2f");
+    // 显示滑动条并更新值
+    if (ImGui::SliderFloat("Fuel Cost (RM/km)", &fuelCost, 0.5f, 5.0f, "%.2f")) {
+        if (m_application) {
+            m_application->SetFuelCostPerKm(fuelCost);
+            m_application->RecalculateCurrentRoute(); // 重新计算路线以应用新设置
+        }
+    }
 
-    // About section
+    if (ImGui::SliderFloat("Driver Wage (RM/hour)", &driverWage, 3.0f, 20.0f, "%.2f")) {
+        if (m_application) {
+            m_application->SetDriverWagePerHour(driverWage);
+            m_application->RecalculateCurrentRoute();
+        }
+    }
+
+    if (ImGui::SliderFloat("Driving Speed (min/km)", &drivingSpeed, 1.0f, 5.0f, "%.2f")) {
+        if (m_application) {
+            m_application->SetDrivingSpeedMinPerKm(drivingSpeed);
+            m_application->RecalculateCurrentRoute();
+        }
+    }
+
+    // 关于部分
     ImGui::Separator();
     ImGui::Text("About:");
     ImGui::TextWrapped(
         "Waste Management System v1.0\n"
         "Developed for COMP2034 Coursework 2\n"
-        "© 2025"
+        "10/04/2025"
     );
 
     ImGui::End();

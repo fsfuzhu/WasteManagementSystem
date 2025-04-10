@@ -1,14 +1,13 @@
 // Route.h
-// This file defines the base Route class that all route types will inherit from
 #pragma once
 
-#include "WasteLocation.h"
+#include "../Core/WasteLocation.h"
 #include <vector>
 #include <string>
 
-/**
- * @brief Base class for all route types
- */
+// 使用前向声明避免循环依赖
+class Application;
+
 class Route {
 protected:
     /* Protected members in Route class */
@@ -21,6 +20,7 @@ protected:
     float m_totalCost;                      // Total cost in RM
     std::string m_routeName;                // Name of the route type
     float m_wasteThreshold;                 // Minimum waste level threshold for collection
+    Application* m_app;                     // Pointer to application for settings
 
     // Calculate costs based on distances
     void CalculateCosts();
@@ -51,4 +51,7 @@ public:
     float GetTotalCost() const;
     std::string GetRouteName() const;
     float GetWasteThreshold() const;
+
+    // Setter for application
+    void SetApplication(Application* app);
 };

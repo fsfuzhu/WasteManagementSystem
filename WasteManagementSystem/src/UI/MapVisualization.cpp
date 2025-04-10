@@ -110,14 +110,14 @@ void MapVisualization::Render(const std::vector<WasteLocation>& locations, const
                     orderStr
                 );
 
+                ImVec2 distPos(
+                    p1.x + (p2.x - p1.x) * 0.5f,
+                    p1.y + (p2.y - p1.y) * 0.5f - 30.0f  // 改为 -30.0f 增加垂直距离
+                );
+
                 // Add distance label
                 char distStr[16];
                 snprintf(distStr, sizeof(distStr), "%.1f", WasteLocation::map_distance_matrix[from][to]);
-
-                ImVec2 distPos(
-                    p1.x + (p2.x - p1.x) * 0.5f,
-                    p1.y + (p2.y - p1.y) * 0.5f - 20.0f
-                );
 
                 // Background for distance label
                 ImVec2 distTextSize = ImGui::CalcTextSize(distStr);

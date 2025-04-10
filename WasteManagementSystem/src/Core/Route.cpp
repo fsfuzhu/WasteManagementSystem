@@ -2,6 +2,7 @@
 // Implementation of the base Route class
 #include "pch.h"
 #include "Route.h"
+#include "../Application.h"
 
 Route::Route(const std::string& name, float threshold)
     : m_finalRoute(),
@@ -12,7 +13,8 @@ Route::Route(const std::string& name, float threshold)
     m_wage(0.0f),
     m_totalCost(0.0f),
     m_routeName(name),
-    m_wasteThreshold(threshold)
+    m_wasteThreshold(threshold),
+    m_app(nullptr)  // 初始化为nullptr
 {
 }
 
@@ -20,30 +22,32 @@ Route::~Route()
 {
 }
 
+void Route::SetApplication(Application* app)
+{
+    m_app = app;
+}
+
 void Route::CalculateCosts()
 {
-    // Calculate total distance
+    // 计算总距离
     m_totalDistance = 0.0f;
     for (float distance : m_individualDistances) {
         m_totalDistance += distance;
     }
 
-    // Calculate time taken (1.5 minutes per km)
-    m_timeTaken = 1.5f * m_totalDistance;
+    // 如果有应用程序指针，使用设置的值进行计算
+    if (m_app) {
+        m_timeTaken = ceil(m_app->GetDrivingSpeedMinPerKm() * m_totalDistance * 100.0f) / 100.0f;
+        m_fuelConsumption = ceil(m_app->GetFuelCostPerKm() * m_totalDistance * 100.0f) / 100.0f;
+        m_wage = ceil(m_app->GetDriverWagePerHour() * (m_timeTaken / 60.0f) * 100.0f) / 100.0f;
+    }
+    else {
+        // 使用默认值
+        m_timeTaken = ceil(1.5f * m_totalDistance * 100.0f) / 100.0f;
+        m_fuelConsumption = ceil(1.5f * m_totalDistance * 100.0f) / 100.0f;
+        m_wage = ceil(5.77f * (m_timeTaken / 60.0f) * 100.0f) / 100.0f;
+    }
 
-    // Calculate fuel consumption (RM 2.50 per km) - 修改后的燃油消耗计算
-    m_fuelConsumption = 2.50f * m_totalDistance;
-
-    // Calculate wage (RM 10.00 per hour) - 修改后的工资计算
-    m_wage = 10.00f * (m_timeTaken / 60.0f);
-
-    // Calculate total cost
-    m_totalCost = m_fuelConsumption + m_wage;
-
-    // Round to 2 decimal places
-    m_timeTaken = std::ceil(m_timeTaken * 100.0f) / 100.0f;
-    m_fuelConsumption = std::ceil(m_fuelConsumption * 100.0f) / 100.0f;
-    m_wage = std::ceil(m_wage * 100.0f) / 100.0f;
     m_totalCost = m_fuelConsumption + m_wage;
 }
 

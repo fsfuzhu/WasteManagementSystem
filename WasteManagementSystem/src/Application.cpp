@@ -10,7 +10,10 @@ Application::Application()
     m_uiManager(nullptr),
     m_currentRoute(nullptr),
     m_currentRouteIndex(0),
-    m_running(false)
+    m_running(false),
+    m_fuelCostPerKm(1.5f),          // 默认值
+    m_driverWagePerHour(6.0f),     // 默认值
+    m_drivingSpeedMinPerKm(1.5f)    // 默认值
 {
 }
 
@@ -58,6 +61,13 @@ void Application::InitializeRouteAlgorithms()
     m_mstRoute = std::make_unique<MSTRoute>();
     m_tspRoute = std::make_unique<TSPRoute>();
     m_greedyRoute = std::make_unique<GreedyRoute>();
+
+    // 设置Application指针
+    m_nonOptimizedRoute->SetApplication(this);
+    m_optimizedRoute->SetApplication(this);
+    m_mstRoute->SetApplication(this);
+    m_tspRoute->SetApplication(this);
+    m_greedyRoute->SetApplication(this);
 
     // Calculate initial routes
     m_nonOptimizedRoute->CalculateRoute(m_wasteLocations);
