@@ -653,6 +653,9 @@ void UIManager::RenderComparisonWindow()
 
     // Compare routes with a bar chart
     if (ImPlot::BeginPlot("Route Cost Comparison", ImVec2(-1, 300))) {
+        // IMPORTANT: Call setup functions AFTER BeginPlot but BEFORE any Plot functions
+        ImPlot::SetupAxes("Route Type", "Cost (RM)");
+
         // Route names
         const char* labels[] = {
             "Non-Optimized",
@@ -661,6 +664,9 @@ void UIManager::RenderComparisonWindow()
             "TSP",
             "Greedy"
         };
+
+        // Setup axis ticks with labels
+        ImPlot::SetupAxisTicks(ImAxis_X1, 0, 4, 5, labels, false);
 
         // Route costs
         float distances[5] = { 0 };
@@ -685,10 +691,6 @@ void UIManager::RenderComparisonWindow()
         ImPlot::PlotBars("Total Cost (RM)", totalCosts, 5, 0.7f);
         ImPlot::PlotBars("Fuel Cost (RM)", fuelCosts, 5, 0.7f);
         ImPlot::PlotBars("Wage Cost (RM)", wageCosts, 5, 0.7f);
-
-        // Set axes labels
-        ImPlot::SetupAxes("Route Type", "Cost (RM)");
-        ImPlot::SetupAxisTicks(ImAxis_X1, 0, 4, 5, labels, false);
 
         ImPlot::EndPlot();
     }
@@ -792,6 +794,10 @@ void UIManager::RenderWastePredictionUI()
 
     // Plot forecasts
     if (ImPlot::BeginPlot("Waste Level Forecast", ImVec2(-1, 400))) {
+        // IMPORTANT: Call setup functions AFTER BeginPlot but BEFORE any Plot functions
+        ImPlot::SetupAxes("Days Ahead", "Waste Level (%)");
+        ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 100);
+
         // Get forecast data from AI component
         WasteLevelPredictor* predictor = m_application->GetWasteLevelPredictor();
 
@@ -833,10 +839,6 @@ void UIManager::RenderWastePredictionUI()
             ImPlot::PlotLine("40% Threshold", x_thresholds, y_40, 2);
             ImPlot::PopStyleColor();
         }
-
-        // Setup axes
-        ImPlot::SetupAxes("Days Ahead", "Waste Level (%)");
-        ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 100);
 
         ImPlot::EndPlot();
     }
@@ -922,13 +924,16 @@ void UIManager::RenderRouteLearningUI()
 
     // Plot learning curve
     if (ImPlot::BeginPlot("Learning Curve", ImVec2(-1, 300))) {
+        // IMPORTANT: Call setup functions AFTER BeginPlot but BEFORE any Plot functions
+        ImPlot::SetupAxes("Training Iterations", "Route Cost (RM)");
+
         double x[100];
         for (int i = 0; i < 100; i++) {
             x[i] = (float)i;
         }
 
         ImPlot::PlotLine("Cost", (const float*)x, (const float*)learningData, 100);
-        ImPlot::SetupAxes("Training Iterations", "Route Cost (RM)");
+
         ImPlot::EndPlot();
     }
 
