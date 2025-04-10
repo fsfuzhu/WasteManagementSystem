@@ -164,9 +164,6 @@
     <ClCompile Include="src\UI\AIToolsPanel.cpp" />
     <ClCompile Include="src\UI\MainWindow.cpp" />
     <ClCompile Include="src\UI\MapVisualization.cpp" />
-    <ClCompile Include="src\UI\RouteComparisonPanel.cpp" />
-    <ClCompile Include="src\UI\RouteDetailsPanel.cpp" />
-    <ClCompile Include="src\UI\SettingsPanel.cpp" />
     <ClCompile Include="src\UI\UIManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
@@ -201,9 +198,6 @@
     <ClInclude Include="src\UI\AIToolsPanel.h" />
     <ClInclude Include="src\UI\MainWindow.h" />
     <ClInclude Include="src\UI\MapVisualization.h" />
-    <ClInclude Include="src\UI\RouteComparisonPanel.h" />
-    <ClInclude Include="src\UI\RouteDetailsPanel.h" />
-    <ClInclude Include="src\UI\SettingsPanel.h" />
     <ClInclude Include="src\UI\UIHelpers.h" />
     <ClInclude Include="src\UI\UIManager.h" />
     <ClInclude Include="src\Utils\FileIO.h" />

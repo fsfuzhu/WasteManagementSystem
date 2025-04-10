@@ -23,7 +23,7 @@ UIManager::UIManager(Application* application)
     // 创建UI组件实例
     m_mainWindow = std::make_unique<MainWindow>();
     m_mapVisualization = std::make_unique<MapVisualization>();
-    m_routeComparisonPanel = std::make_unique<RouteComparisonPanel>();
+
 }
 
 
@@ -61,7 +61,6 @@ bool UIManager::Initialize(GLFWwindow* window)
     // 初始化UI组件
     m_mainWindow->Initialize();
     m_mapVisualization->Initialize();
-    m_routeComparisonPanel->Initialize();
 
     return true;
 }

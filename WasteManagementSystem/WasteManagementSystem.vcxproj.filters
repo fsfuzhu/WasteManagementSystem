@@ -133,19 +133,10 @@
     <ClCompile Include="src\UI\MapVisualization.cpp">
       <Filter>src\UI</Filter>
     </ClCompile>
-    <ClCompile Include="src\UI\RouteComparisonPanel.cpp">
-      <Filter>src\UI</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\UI\RouteDetailsPanel.cpp">
-      <Filter>src\UI</Filter>
-    </ClCompile>
     <ClCompile Include="src\UI\AIToolsPanel.cpp">
-      <Filter>src\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\UI\SettingsPanel.cpp">
       <Filter>src\UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -240,19 +231,10 @@
     <ClInclude Include="src\UI\MapVisualization.h">
       <Filter>src\UI</Filter>
     </ClInclude>
-    <ClInclude Include="src\UI\RouteComparisonPanel.h">
-      <Filter>src\UI</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\UI\AIToolsPanel.h">
-      <Filter>src\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\UI\RouteDetailsPanel.h">
-      <Filter>src\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\UI\SettingsPanel.h">
       <Filter>src\UI</Filter>
     </ClInclude>
     <ClInclude Include="src\UI\UIHelpers.h">

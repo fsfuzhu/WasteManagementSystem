@@ -14,7 +14,6 @@ class Application;
 // This fixes the incomplete type error with std::unique_ptr
 #include "MainWindow.h"
 #include "MapVisualization.h"
-#include "RouteComparisonPanel.h"
 
 /**
  * @brief Manages the ImGui-based user interface
@@ -28,7 +27,6 @@ private:
     // UI components
     std::unique_ptr<MainWindow> m_mainWindow;
     std::unique_ptr<MapVisualization> m_mapVisualization;
-    std::unique_ptr<RouteComparisonPanel> m_routeComparisonPanel;
 
     // UI state
     bool m_showMapWindow;
