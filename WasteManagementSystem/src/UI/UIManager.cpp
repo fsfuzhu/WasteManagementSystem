@@ -322,40 +322,6 @@ void UIManager::RenderMapWindow()
     float offsetX = canvasPos.x + (canvasSize.x - 500.0f * scale) * 0.5f;
     float offsetY = canvasPos.y + (canvasSize.y - 500.0f * scale) * 0.5f;
 
-    // Draw roads
-    ImU32 roadColor = IM_COL32(150, 150, 150, 200);
-    float roadThickness = 3.0f;
-
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (WasteLocation::map_distance_matrix[i][j] < INF) {
-                // Draw road from location i to j
-                ImVec2 p1(
-                    offsetX + WasteLocation::location_coordinates[i][0] * scale,
-                    offsetY + WasteLocation::location_coordinates[i][1] * scale
-                );
-
-                ImVec2 p2(
-                    offsetX + WasteLocation::location_coordinates[j][0] * scale,
-                    offsetY + WasteLocation::location_coordinates[j][1] * scale
-                );
-
-                drawList->AddLine(p1, p2, roadColor, roadThickness);
-
-                // Draw distance label
-                ImVec2 midpoint(
-                    (p1.x + p2.x) * 0.5f,
-                    (p1.y + p2.y) * 0.5f
-                );
-
-                // Convert distance to string
-                char distStr[16];
-                snprintf(distStr, sizeof(distStr), "%.1f", WasteLocation::map_distance_matrix[i][j]);
-
-                drawList->AddText(midpoint, IM_COL32(255, 255, 255, 200), distStr);
-            }
-        }
-    }
 
     // Draw route if available
     if (currentRoute) {

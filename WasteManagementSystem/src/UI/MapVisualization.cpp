@@ -44,7 +44,7 @@ void MapVisualization::Render(const std::vector<WasteLocation>& locations, const
     float offsetX = canvasPos.x + (canvasSize.x - 500.0f * scale) * 0.5f;
     float offsetY = canvasPos.y + (canvasSize.y - 500.0f * scale) * 0.5f;
 
-    // Draw route if available (ONLY show the green route)
+    // Draw route if available (only show the green route)
     if (route) {
         const std::vector<int>& routePath = route->GetFinalRoute();
 
