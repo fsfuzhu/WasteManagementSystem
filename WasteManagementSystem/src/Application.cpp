@@ -218,6 +218,20 @@ void Application::RecalculateCurrentRoute()
     m_greedyRoute->CalculateRoute(m_wasteLocations);
 }
 
+void Application::RegenerateLocations(bool regenerateWasteLevel)
+{
+    // Regenerate random location coordinates
+    WasteLocation::RegenerateLocations();
+
+    // Optionally regenerate waste levels
+    if (regenerateWasteLevel) {
+        RegenerateWasteLevels();
+    }
+    else {
+        // Just recalculate routes with new distances
+        RecalculateCurrentRoute();
+    }
+}
 void Application::RegenerateWasteLevels()
 {
     // Regenerate waste levels for all locations

@@ -89,6 +89,12 @@ public:
      */
     static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 
+    /**
+     * @brief Regenerate random coordinates for waste locations
+     * @param regenerateWasteLevel Also regenerate waste levels if true
+     */
+    void RegenerateLocations(bool regenerateWasteLevel = true);
+
     // Getters
     UIManager* GetUIManager() const;
     const std::vector<WasteLocation>& GetWasteLocations() const;

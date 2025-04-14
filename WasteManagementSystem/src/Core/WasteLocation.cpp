@@ -2,6 +2,7 @@
 // Implementation of the WasteLocation class
 #include "pch.h"
 #include "WasteLocation.h"
+#include "LocationCoordinateGenerator.h"
 
 // Initialize static distance matrix
 float WasteLocation::map_distance_matrix[8][8];
@@ -105,4 +106,26 @@ void WasteLocation::InitializeDistanceMatrix()
             map_distance_matrix[i][j] = CalculateDirectDistance(i, j);
         }
     }
+}
+void WasteLocation::RegenerateLocations(float mapWidth, float mapHeight, float minDistance, float maxDistance)
+{
+    // Generate random coordinates
+    auto coordinates = LocationCoordinateGenerator::GenerateRandomCoordinates(
+        7, // 7 locations (excluding station)
+        mapWidth,
+        mapHeight,
+        minDistance,
+        maxDistance
+    );
+
+    // Update location_coordinates with new random values
+    for (size_t i = 0; i < coordinates.size(); i++) {
+        location_coordinates[i][0] = coordinates[i].first;
+        location_coordinates[i][1] = coordinates[i].second;
+    }
+
+    // Recalculate distance matrix
+    InitializeDistanceMatrix();
+
+    std::cout << "Regenerated random location coordinates." << std::endl;
 }

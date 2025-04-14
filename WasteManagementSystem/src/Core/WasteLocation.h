@@ -52,6 +52,16 @@ public:
      */
     static float CalculateDirectDistance(int fromId, int toId);
 
+    /**
+     * @brief Regenerate all location coordinates randomly
+     * @param mapWidth Width of the map in pixels
+     * @param mapHeight Height of the map in pixels
+     * @param minDistance Minimum distance between locations in km
+     * @param maxDistance Maximum distance between locations in km
+     */
+    static void RegenerateLocations(float mapWidth = 500.0f, float mapHeight = 500.0f,
+        float minDistance = 2.0f, float maxDistance = 15.0f);
+
     /* Static public variables shared across all instances of WasteLocation class */
 
     // Dictionary to map location name to its index in the matrix
@@ -78,8 +88,8 @@ public:
         {7, "G"}
     };
 
-    // 2D coordinates for drawing the map visualization
-    static inline const float location_coordinates[8][2] = {
+    // 2D coordinates for drawing the map visualization - now mutable for random generation
+    static inline float location_coordinates[8][2] = {
         {100, 100},  // Station
         {300, 100},  // A
         {400, 300},  // B

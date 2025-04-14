@@ -188,6 +188,16 @@ void UIManager::RenderMenuBar()
                 m_application->RegenerateWasteLevels();
             }
 
+            if (ImGui::MenuItem("Regenerate Locations Only", "Ctrl+L")) {
+                // Regenerate only locations, keep waste levels
+                m_application->RegenerateLocations(false);
+            }
+
+            if (ImGui::MenuItem("Regenerate Waste Levels Only", "Ctrl+W")) {
+                // Regenerate only waste levels, keep locations
+                m_application->RegenerateWasteLevels();
+            }
+
             ImGui::Separator();
 
             if (ImGui::MenuItem("Export Report", "Ctrl+E")) {
@@ -437,6 +447,12 @@ void UIManager::RenderComparisonWindow()
     // Button to regenerate waste levels
     if (ImGui::Button("Regenerate Waste Levels")) {
         m_application->RegenerateWasteLevels();
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Regenerate Locations")) {
+        m_application->RegenerateLocations(false);  // Don't regenerate waste levels
     }
 
     ImGui::SameLine();

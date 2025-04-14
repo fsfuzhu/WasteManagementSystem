@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
     // Enable anti-aliasing
     glEnable(GL_MULTISAMPLE);
 
-    WasteLocation::InitializeDistanceMatrix();
+    WasteLocation::RegenerateLocations();
     // Initialize application
     Application app;
 
