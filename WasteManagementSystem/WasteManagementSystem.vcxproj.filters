@@ -240,6 +240,9 @@
     <ClInclude Include="src\UI\UIHelpers.h">
       <Filter>src\UI</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\LocationCoordinateGenerator.h">
+      <Filter>src\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vendor\glfw\lib-vc2022\glfw3.dll">

@@ -561,6 +561,64 @@ void UIManager::RenderComparisonWindow()
 
     ImGui::Columns(1);
 
+    ImGui::Separator();
+
+    // Get route data
+    float lowestCost = std::numeric_limits<float>::max();
+    int lowestCostIndex = -1;
+    int mostLocationsIndex = -1;
+    int maxLocationCount = -1;
+
+    // Get current route index to restore later
+    int originalRouteIndex2 = m_application->GetCurrentRouteIndex();
+
+    // Find which route has lowest cost and which visits most locations
+    for (int i = 0; i < 5; i++) {
+        m_application->SelectRoute(i);
+        Route* route = m_application->GetCurrentRoute();
+        if (route) {
+            float cost = route->GetTotalCost();
+            int locationCount = route->GetFinalRoute().size();
+
+            if (cost < lowestCost) {
+                lowestCost = cost;
+                lowestCostIndex = i;
+            }
+
+            if (locationCount > maxLocationCount) {
+                maxLocationCount = locationCount;
+                mostLocationsIndex = i;
+            }
+        }
+    }
+
+    // Restore original route
+    m_application->SelectRoute(originalRouteIndex2);
+
+    // Route names
+    const char* routeNames2[] = {
+        "Non-Optimized",
+        "Optimized",
+        "MST",
+        "TSP",
+        "Greedy"
+    };
+
+    // Create a red background for the AI analysis
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.7f, 0.1f, 0.1f, 0.9f));
+    ImGui::BeginChild("AIAnalysis", ImVec2(-1, 50), true);
+
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+    ImGui::TextWrapped("AI Analysis: %s route is most cost-efficient (RM %.2f). %s route visits the most locations (%d stops).",
+        lowestCostIndex >= 0 ? routeNames2[lowestCostIndex] : "Unknown",
+        lowestCost,
+        mostLocationsIndex >= 0 ? routeNames2[mostLocationsIndex] : "Unknown",
+        maxLocationCount);
+    ImGui::PopStyleColor();
+
+    ImGui::EndChild();
+    ImGui::PopStyleColor();
+
     ImGui::End();
 }
 

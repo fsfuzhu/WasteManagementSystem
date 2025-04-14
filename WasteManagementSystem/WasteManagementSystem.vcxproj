@@ -189,6 +189,7 @@
     <ClInclude Include="src\AI\WasteLevelPredictor.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Core\GreedyRoute.h" />
+    <ClInclude Include="src\Core\LocationCoordinateGenerator.h" />
     <ClInclude Include="src\Core\MSTRoute.h" />
     <ClInclude Include="src\Core\NonOptimizedRoute.h" />
     <ClInclude Include="src\Core\OptimizedRoute.h" />
