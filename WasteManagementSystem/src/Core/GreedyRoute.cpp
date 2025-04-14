@@ -28,7 +28,7 @@ std::vector<int> GreedyRoute::FilterDestinationsByWasteLevel(const std::vector<W
 
     return filteredDestinations;
 }
-std::vector<int> GreedyRoute::PathReconstruction(int start, int end, const int matrix[8][8])
+std::vector<int> GreedyRoute::PathReconstruction(int start, int end, const int matrix[9][9])
 {
     std::vector<int> path;
     while (start != end)

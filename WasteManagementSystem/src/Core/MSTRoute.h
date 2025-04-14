@@ -45,7 +45,7 @@ private:
     std::vector<int> ExpandRouteWithIntermediateNodes(const std::vector<int>& shortcutTour);
 
     // Path reconstruction helper (similar to OptimizedRoute)
-    std::vector<int> PathReconstruction(int start, int end, const int matrix[8][8]);
+    std::vector<int> PathReconstruction(int start, int end, const int matrix[9][9]);
 
     // Calculate individual segment distances
     std::vector<float> CalculateSegmentDistances(const std::vector<int>& route);

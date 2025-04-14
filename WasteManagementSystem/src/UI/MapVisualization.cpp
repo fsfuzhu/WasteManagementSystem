@@ -137,7 +137,7 @@ void MapVisualization::Render(const std::vector<WasteLocation>& locations, const
     }
 
     // Draw waste locations and their labels on top
-    for (size_t i = 0; i < 8; i++) {
+    for (size_t i = 0; i < 9; i++) {
         ImVec2 pos(
             offsetX + WasteLocation::location_coordinates[i][0] * scale,
             offsetY + WasteLocation::location_coordinates[i][1] * scale

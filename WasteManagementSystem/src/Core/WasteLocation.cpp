@@ -5,7 +5,7 @@
 #include "LocationCoordinateGenerator.h"
 
 // Initialize static distance matrix
-float WasteLocation::map_distance_matrix[8][8];
+float WasteLocation::map_distance_matrix[9][9];
 
 // Constructor
 WasteLocation::WasteLocation(const std::string& name)
@@ -68,6 +68,7 @@ std::vector<WasteLocation> WasteLocation::InitializeWasteLocations()
     locations.push_back(WasteLocation("E"));
     locations.push_back(WasteLocation("F"));
     locations.push_back(WasteLocation("G"));
+    locations.push_back(WasteLocation("H"));
 
     // Initialize distance matrix
     InitializeDistanceMatrix();
@@ -101,8 +102,8 @@ float WasteLocation::CalculateDirectDistance(int fromId, int toId)
 void WasteLocation::InitializeDistanceMatrix()
 {
     // Calculate distances between all pairs of locations
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
             map_distance_matrix[i][j] = CalculateDirectDistance(i, j);
         }
     }
@@ -111,7 +112,7 @@ void WasteLocation::RegenerateLocations(float mapWidth, float mapHeight, float m
 {
     // Generate random coordinates
     auto coordinates = LocationCoordinateGenerator::GenerateRandomCoordinates(
-        7, // 7 locations (excluding station)
+        8, // 7 locations (excluding station)
         mapWidth,
         mapHeight,
         minDistance,

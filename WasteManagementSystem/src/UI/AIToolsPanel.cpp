@@ -322,7 +322,7 @@ void AIToolsPanel::RenderQValueMatrix(RouteLearningAgent* agent)
         ImGui::TableNextColumn();
         ImGui::Text("From \\ To");
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             ImGui::TableNextColumn();
             ImGui::Text("%s", WasteLocation::dict_Id_to_Name[i].c_str());
         }
@@ -331,7 +331,7 @@ void AIToolsPanel::RenderQValueMatrix(RouteLearningAgent* agent)
         float** qMatrix = agent->GetQMatrix();
 
         // Rows for each source location
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             ImGui::TableNextRow();
 
             // First column is the source location
@@ -339,7 +339,7 @@ void AIToolsPanel::RenderQValueMatrix(RouteLearningAgent* agent)
             ImGui::Text("%s", WasteLocation::dict_Id_to_Name[i].c_str());
 
             // Remaining columns are Q-values for each destination
-            for (int j = 0; j < 8; j++) {
+            for (int j = 0; j < 9; j++) {
                 ImGui::TableNextColumn();
 
                 if (i == j) {
@@ -363,7 +363,7 @@ void AIToolsPanel::RenderQValueMatrix(RouteLearningAgent* agent)
         }
 
         // Clean up the matrix
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             delete[] qMatrix[i];
         }
         delete[] qMatrix;

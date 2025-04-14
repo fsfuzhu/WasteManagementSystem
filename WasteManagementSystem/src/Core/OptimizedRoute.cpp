@@ -4,8 +4,8 @@
 #include "OptimizedRoute.h"
 
 // Initialize static members
-float OptimizedRoute::s_floydWarshallMatrix[8][8];
-int OptimizedRoute::s_shortestRouteMatrix[8][8];
+float OptimizedRoute::s_floydWarshallMatrix[9][9];
+int OptimizedRoute::s_shortestRouteMatrix[9][9];
 
 OptimizedRoute::OptimizedRoute()
     : Route("Optimized Route", 60.0f), // 60% waste threshold for optimized route
@@ -19,19 +19,23 @@ OptimizedRoute::~OptimizedRoute()
 
 void OptimizedRoute::InitializeFloydWarshall()
 {
-    // 由于我们现在使用直线距离，所有点之间都可以直接连接
-    // Floyd-Warshall算法不再需要用于寻找中间节点
-    // 但为了保持代码兼容性，我们仍然复制距离矩阵到s_floydWarshallMatrix
-
-    // Copy distance matrix to floyd warshall matrix
-    memcpy(&s_floydWarshallMatrix, &WasteLocation::map_distance_matrix,
-        sizeof(WasteLocation::map_distance_matrix));
-
-    // Initialize shortest route matrix
-    // 在直接连接的情况下，最短路径总是直接从一点到另一点
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
+    // 复制初始距离矩阵
+    for (int i = 0; i < 9; i++) {  // 改为 9
+        for (int j = 0; j < 9; j++) {  // 改为 9
+            s_floydWarshallMatrix[i][j] = WasteLocation::map_distance_matrix[i][j];
             s_shortestRouteMatrix[i][j] = j;
+        }
+    }
+
+    // Floyd-Warshall 算法
+    for (int k = 0; k < 9; k++) {  // 改为 9
+        for (int i = 0; i < 9; i++) {  // 改为 9
+            for (int j = 0; j < 9; j++) {  // 改为 9
+                if (s_floydWarshallMatrix[i][k] + s_floydWarshallMatrix[k][j] < s_floydWarshallMatrix[i][j]) {
+                    s_floydWarshallMatrix[i][j] = s_floydWarshallMatrix[i][k] + s_floydWarshallMatrix[k][j];
+                    s_shortestRouteMatrix[i][j] = s_shortestRouteMatrix[i][k];
+                }
+            }
         }
     }
 }
@@ -60,8 +64,8 @@ std::vector<int> OptimizedRoute::FilterDestinationsByWasteLevel(const std::vecto
 
 std::vector<int> OptimizedRoute::GenerateFullRoute(
     const std::vector<int>& filteredDestinations,
-    const float floydWarshallMatrix[8][8],
-    const int shortestRouteMatrix[8][8])
+    const float floydWarshallMatrix[9][9],
+    const int shortestRouteMatrix[9][9])
 {
     std::vector<int> finalRoute;
     // Make a copy of the filtered destinations without station (which will be handled separately)
@@ -126,7 +130,7 @@ std::vector<int> OptimizedRoute::GenerateFullRoute(
 
     return finalRoute;
 }
-std::vector<int> OptimizedRoute::PathReconstruction(int start, int end, const int matrix[8][8])
+std::vector<int> OptimizedRoute::PathReconstruction(int start, int end, const int matrix[9][9])
 {
     std::vector<int> path;
     while (start != end)

@@ -180,7 +180,7 @@ std::vector<float> MSTRoute::CalculateSegmentDistances(const std::vector<int>& r
 
     return distances;
 }
-std::vector<int> MSTRoute::PathReconstruction(int start, int end, const int matrix[8][8]) {
+std::vector<int> MSTRoute::PathReconstruction(int start, int end, const int matrix[9][9]) {
     std::vector<int> path;
     while (start != end) {
         path.push_back(start);

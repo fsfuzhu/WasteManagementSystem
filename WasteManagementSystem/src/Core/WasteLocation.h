@@ -73,7 +73,8 @@ public:
         {"D", 4},
         {"E", 5},
         {"F", 6},
-        {"G", 7}
+        {"G", 7},
+        {"H", 8}
     };
 
     // Dictionary to map location index to its name
@@ -85,11 +86,12 @@ public:
         {4, "D"},
         {5, "E"},
         {6, "F"},
-        {7, "G"}
+        {7, "G"},
+        {8, "H"}
     };
 
-    // 2D coordinates for drawing the map visualization - now mutable for random generation
-    static inline float location_coordinates[8][2] = {
+	// 2D coordinates for drawing the map visualization - now mutable for random generation
+    static inline float location_coordinates[9][2] = {
         {100, 100},  // Station
         {300, 100},  // A
         {400, 300},  // B
@@ -97,11 +99,12 @@ public:
         {200, 400},  // D
         {100, 400},  // E
         {200, 300},  // F
-        {100, 200}   // G
+        {100, 200},  // G
+        {400, 200}   // H
     };
 
     // Distance matrix between locations will be calculated dynamically based on coordinates
-    static float map_distance_matrix[8][8];
+    static float map_distance_matrix[9][9];
 
     // Initialize distance matrix with direct distances
     static void InitializeDistanceMatrix();

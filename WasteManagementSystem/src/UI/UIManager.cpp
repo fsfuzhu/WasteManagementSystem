@@ -835,7 +835,7 @@ void UIManager::RenderRouteLearningUI()
     ImGui::Text("Q-Value Map (Route Segment Values):");
 
     // Simple Q-value visualization as a heatmap
-    static float qValues[8][8];
+    static float qValues[9][9];
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (WasteLocation::map_distance_matrix[i][j] < INF) {

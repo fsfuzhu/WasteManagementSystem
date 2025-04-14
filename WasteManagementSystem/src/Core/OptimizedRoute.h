@@ -24,13 +24,13 @@ private:
     // Generate full route visiting all filtered destinations
     std::vector<int> GenerateFullRoute(
         const std::vector<int>& filteredDestinations,
-        const float floydWarshallMatrix[8][8],
-        const int shortestRouteMatrix[8][8]);
+        const float floydWarshallMatrix[9][9],
+        const int shortestRouteMatrix[9][9]);
 
 public:
     // Made these public so they can be accessed by other route classes
-    static float s_floydWarshallMatrix[8][8];  // Shortest path distances
-    static int s_shortestRouteMatrix[8][8];    // Next node in shortest path
+    static float s_floydWarshallMatrix[9][9];  // Shortest path distances
+    static int s_shortestRouteMatrix[9][9];    // Next node in shortest path
 
     /**
      * @brief Constructor for OptimizedRoute
@@ -44,7 +44,7 @@ public:
      * Must be called once before using OptimizedRoute
      */
     static void InitializeFloydWarshall();
-    std::vector<int> PathReconstruction(int start, int end, const int matrix[8][8]);
+    std::vector<int> PathReconstruction(int start, int end, const int matrix[9][9]);
     /**
      * @brief Calculate optimized route visiting locations with waste level >= threshold
      * and are within 20km from the station

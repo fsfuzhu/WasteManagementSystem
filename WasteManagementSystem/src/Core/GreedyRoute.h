@@ -26,7 +26,7 @@ private:
     std::vector<int> GenerateGreedyRoute(const std::vector<int>& destinations);
 
     // Path reconstruction helper (similar to OptimizedRoute)
-    std::vector<int> PathReconstruction(int start, int end, const int matrix[8][8]);
+    std::vector<int> PathReconstruction(int start, int end, const int matrix[9][9]);
 
     // Expand route with intermediate nodes for nodes not directly connected
     std::vector<int> ExpandRouteWithIntermediateNodes(const std::vector<int>& basicRoute);

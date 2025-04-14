@@ -11,7 +11,7 @@ TSPRoute::TSPRoute()
 TSPRoute::~TSPRoute()
 {
 }
-std::vector<int> TSPRoute::PathReconstruction(int start, int end, const int matrix[8][8])
+std::vector<int> TSPRoute::PathReconstruction(int start, int end, const int matrix[9][9])
 {
     std::vector<int> path;
     while (start != end)
