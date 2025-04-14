@@ -338,6 +338,15 @@ void Application::ExportRouteReport(const std::string& filename)
 
     std::cout << "Route report exported to: " << filename << std::endl;
 }
+//void Application::ExportRouteReport(const std::string& filename)
+//{
+//    std::unordered_map<std::string, std::vector<float>> predictions;
+//    if (m_wasteLevelPredictor) {
+//        predictions = m_wasteLevelPredictor->GenerateForecasts(7); // 7-day forecast
+//    }
+//    // Use the FileIO function to export a complete report
+//    return FileIO::ExportCompleteReport(m_routes, m_wasteLocations, predictions, filename);
+//}
 
 void Application::WriteRouteReport(std::ofstream& file, Route* route, const std::string& title)
 {

@@ -5,6 +5,145 @@
 
 namespace FileIO {
 
+    bool ExportCompleteReport(
+        const std::vector<Route*>& routes,
+        const std::vector<WasteLocation>& locations,
+        const std::unordered_map<std::string, std::vector<float>>& predictions,
+        const std::string& filename)
+    {
+        // Open file for writing
+        std::ofstream file(filename);
+        if (!file.is_open()) {
+            std::cerr << "Failed to open file: " << filename << std::endl;
+            return false;
+        }
+
+        // Get current time
+        auto now = std::chrono::system_clock::now();
+        auto time = std::chrono::system_clock::to_time_t(now);
+
+        // Write main header
+        file << "=====================================================" << std::endl;
+        file << "Waste Management System - Complete Report" << std::endl;
+        file << "=====================================================" << std::endl;
+        file << "Date: " << std::ctime(&time);
+        file << "=====================================================" << std::endl << std::endl;
+
+        // SECTION 1: Waste Locations and Levels
+        file << "SECTION 1: WASTE LOCATIONS AND LEVELS" << std::endl;
+        file << "=====================================================" << std::endl;
+        file << "Location\tWaste Level (%)" << std::endl;
+        file << "-----------------------------------------------------" << std::endl;
+
+        for (const auto& location : locations) {
+            file << location.GetLocationName() << "\t\t"
+                << location.GetWasteLevel() << std::endl;
+        }
+        file << std::endl << std::endl;
+
+        // SECTION 2: Route Comparison Summary
+        file << "SECTION 2: ROUTE COMPARISON SUMMARY" << std::endl;
+        file << "=====================================================" << std::endl;
+        file << "Route Type\tWaste Threshold\tTotal Distance\tTotal Cost" << std::endl;
+        file << "-----------------------------------------------------" << std::endl;
+
+        for (const auto& route : routes) {
+            file << route->GetRouteName() << "\t"
+                << route->GetWasteThreshold() << "%\t\t"
+                << route->GetTotalDistance() << " km\t\t"
+                << "RM " << route->GetTotalCost() << std::endl;
+        }
+        file << std::endl << std::endl;
+
+        // SECTION 3: Detailed Route Information
+        file << "SECTION 3: DETAILED ROUTE INFORMATION" << std::endl;
+        file << "=====================================================" << std::endl;
+
+        for (const auto& route : routes) {
+            file << "-----------------------------------------------------" << std::endl;
+            file << "Route Type: " << route->GetRouteName() << std::endl;
+            file << "Waste Threshold: " << route->GetWasteThreshold() << "%" << std::endl;
+            file << "-----------------------------------------------------" << std::endl;
+
+            const std::vector<int>& routePath = route->GetFinalRoute();
+            const std::vector<float>& distances = route->GetIndividualDistances();
+
+            // Write route sequence
+            file << "Route Sequence: ";
+            for (size_t i = 0; i < routePath.size(); i++) {
+                file << WasteLocation::dict_Id_to_Name[routePath[i]];
+                if (i < routePath.size() - 1) {
+                    file << " -> ";
+                }
+            }
+            file << std::endl << std::endl;
+
+            // Write segment distances
+            file << "Segment Distances:" << std::endl;
+            for (size_t i = 0; i < routePath.size() - 1; i++) {
+                file << WasteLocation::dict_Id_to_Name[routePath[i]] << " -> "
+                    << WasteLocation::dict_Id_to_Name[routePath[i + 1]] << ": "
+                    << distances[i] << " km" << std::endl;
+            }
+            file << std::endl;
+
+            // Write cost summary
+            file << "Cost Summary:" << std::endl;
+            file << "Total Distance: " << route->GetTotalDistance() << " km" << std::endl;
+            file << "Time Taken: " << route->GetTimeTaken() << " min ("
+                << route->GetTimeTaken() / 60.0f << " hours)" << std::endl;
+            file << "Fuel Consumption: RM " << route->GetFuelConsumption() << std::endl;
+            file << "Driver's Wage: RM " << route->GetWage() << std::endl;
+            file << "Total Cost: RM " << route->GetTotalCost() << std::endl;
+            file << std::endl;
+        }
+
+        // SECTION 4: Waste Level Predictions (if available)
+        if (!predictions.empty()) {
+            file << "SECTION 4: WASTE LEVEL PREDICTIONS" << std::endl;
+            file << "=====================================================" << std::endl;
+
+            // Find maximum days in predictions
+            size_t maxDays = 0;
+            for (const auto& pair : predictions) {
+                maxDays = std::max(maxDays, pair.second.size());
+            }
+
+            // Header for prediction days
+            file << "Location\tCurrent";
+            for (size_t i = 1; i < maxDays; i++) {
+                file << "\tDay " << i;
+            }
+            file << std::endl;
+            file << "-----------------------------------------------------" << std::endl;
+
+            // Write predictions for each location
+            for (const auto& pair : predictions) {
+                if (pair.first == "Station") continue; // Skip station
+
+                file << pair.first << "\t";
+                for (size_t i = 0; i < pair.second.size(); i++) {
+                    file << pair.second[i];
+                    if (i < pair.second.size() - 1) {
+                        file << "\t";
+                    }
+                }
+                file << std::endl;
+            }
+            file << std::endl;
+        }
+
+        file << "=====================================================" << std::endl;
+        file << "End of Report" << std::endl;
+        file << "=====================================================" << std::endl;
+
+        file.close();
+
+        std::cout << "Complete report saved to: " << filename << std::endl;
+
+        return true;
+    }
+
     bool SaveRouteToFile(const Route* route, const std::string& filename)
     {
         // Open file for writing
@@ -63,6 +202,10 @@ namespace FileIO {
         file << "Fuel Consumption: RM " << route->GetFuelConsumption() << std::endl;
         file << "Driver's Wage: RM " << route->GetWage() << std::endl;
         file << "Total Cost: RM " << route->GetTotalCost() << std::endl;
+
+		file << std::endl;
+		// Write waste levels
+
 
         file.close();
 

@@ -1106,7 +1106,7 @@ void UIManager::RenderSettingsWindow()
 // Render status bar
 void UIManager::RenderStatusBar()
 {
-    const float statusBarHeight = 25.0f;
+    const float statusBarHeight = 40.0f;
 
     ImGuiViewport* viewport = ImGui::GetMainViewport();
     ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + viewport->Size.y - statusBarHeight));
@@ -1132,7 +1132,7 @@ void UIManager::RenderStatusBar()
     std::string routeName = currentRoute ? currentRoute->GetRouteName() : "None";
 
     ImGui::Text("Current Route: %s", routeName.c_str());
-    ImGui::SameLine(200);
+    ImGui::SameLine();
 
     // Current time
     time_t now = time(nullptr);
@@ -1141,7 +1141,7 @@ void UIManager::RenderStatusBar()
     strftime(timeStr, sizeof(timeStr), "%H:%M:%S", timeinfo);
 
     ImGui::Text("Time: %s", timeStr);
-    ImGui::SameLine(350);
+    ImGui::SameLine();
 
     // FPS
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);

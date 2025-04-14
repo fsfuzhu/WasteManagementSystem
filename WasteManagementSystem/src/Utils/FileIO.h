@@ -13,6 +13,13 @@
  * @brief File I/O utilities for the waste management system
  */
 namespace FileIO {
+
+    bool ExportCompleteReport(
+        const std::vector<Route*>& routes,
+        const std::vector<WasteLocation>& locations,
+        const std::unordered_map<std::string, std::vector<float>>& predictions,
+        const std::string& filename);
+
     /**
      * @brief Save route information to a file
      * @param route Route to save
