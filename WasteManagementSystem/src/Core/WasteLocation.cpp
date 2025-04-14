@@ -91,7 +91,7 @@ float WasteLocation::CalculateDirectDistance(int fromId, int toId)
     // Calculate euclidean distance
     float dx = x2 - x1;
     float dy = y2 - y1;
-    float distance = std::sqrt(dx * dx + dy * dy) / 50.0f; // Scale factor to get reasonable distances in km
+    float distance = std::sqrt(dx * dx + dy * dy) / 30.0f; // Scale factor to get reasonable distances in km
 
     // Round to 1 decimal place
     return std::round(distance * 10.0f) / 10.0f;

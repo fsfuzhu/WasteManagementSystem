@@ -60,7 +60,7 @@ public:
      * @param maxDistance Maximum distance between locations in km
      */
     static void RegenerateLocations(float mapWidth = 500.0f, float mapHeight = 500.0f,
-        float minDistance = 2.0f, float maxDistance = 15.0f);
+        float minDistance = 2.0f, float maxDistance = 40.0f);
 
     /* Static public variables shared across all instances of WasteLocation class */
 
