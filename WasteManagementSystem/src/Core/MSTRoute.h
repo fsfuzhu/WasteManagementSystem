@@ -33,7 +33,7 @@ private:
 
     // DFS traversal for Euler tour
     void DFSTraversal(int node, std::vector<std::vector<int>>& adjList,
-        std::vector<int>& tour);
+        std::vector<int>& tour, std::vector<bool>& visited);
 
     // Generate Euler tour from MST
     std::vector<int> GenerateEulerTour(const std::vector<std::pair<int, int>>& mst, int startNode);

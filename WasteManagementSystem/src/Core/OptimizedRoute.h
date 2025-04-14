@@ -21,9 +21,6 @@ private:
     // Filter destinations by waste level and distance
     std::vector<int> FilterDestinationsByWasteLevel(const std::vector<WasteLocation>& locations);
 
-    // Reconstruct shortest path between two nodes
-    std::vector<int> PathReconstruction(int start, int end, const int matrix[8][8]);
-
     // Generate full route visiting all filtered destinations
     std::vector<int> GenerateFullRoute(
         const std::vector<int>& filteredDestinations,
@@ -47,7 +44,7 @@ public:
      * Must be called once before using OptimizedRoute
      */
     static void InitializeFloydWarshall();
-
+    std::vector<int> PathReconstruction(int start, int end, const int matrix[8][8]);
     /**
      * @brief Calculate optimized route visiting locations with waste level >= threshold
      * and are within 20km from the station

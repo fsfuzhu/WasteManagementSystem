@@ -63,6 +63,7 @@ public:
      */
     virtual bool CalculateRoute(const std::vector<WasteLocation>& locations) override;
 
+
     // Get filtered destinations that need pickup
     const std::vector<int>& GetFilteredDestinations() const;
 

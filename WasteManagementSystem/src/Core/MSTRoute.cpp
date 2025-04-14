@@ -122,117 +122,128 @@ std::vector<std::vector<int>> MSTRoute::CreateAdjacencyList(
 }
 
 void MSTRoute::DFSTraversal(int node, std::vector<std::vector<int>>& adjList,
-    std::vector<int>& tour)
+    std::vector<int>& tour, std::vector<bool>& visited)
 {
-    // Visit node
+    visited[node] = true;
     tour.push_back(node);
 
-    // Process all neighbors
-    while (!adjList[node].empty()) {
-        int next = adjList[node].back();
-        adjList[node].pop_back();
-
-        // Remove the reverse edge
-        auto it = std::find(adjList[next].begin(), adjList[next].end(), node);
-        if (it != adjList[next].end()) {
-            adjList[next].erase(it);
+    for (int neighbor : adjList[node]) {
+        if (!visited[neighbor]) {
+            DFSTraversal(neighbor, adjList, tour, visited);
         }
-
-        // Recursively traverse the next node
-        DFSTraversal(next, adjList, tour);
     }
 }
 
+
 std::vector<int> MSTRoute::GenerateEulerTour(const std::vector<std::pair<int, int>>& mst, int startNode)
 {
-    // If MST is empty, return only the start node
-    if (mst.empty()) {
-        return { startNode };
-    }
+    // 创建邻接表
+    int numNodes = 8; // 总共有8个位置 (0-7)
+    std::vector<std::vector<int>> adjList = CreateAdjacencyList(mst, numNodes);
 
-    // Find the maximum node ID to determine size of adjacency list
-    int maxNode = startNode;
-    for (const auto& edge : mst) {
-        maxNode = std::max(maxNode, std::max(edge.first, edge.second));
-    }
-
-    // Create adjacency list
-    std::vector<std::vector<int>> adjList = CreateAdjacencyList(mst, maxNode + 1);
-
-    // Generate Euler tour
+    // 进行深度优先遍历
     std::vector<int> tour;
-    DFSTraversal(startNode, adjList, tour);
+    std::vector<bool> visited(numNodes, false);
+
+    // 开始DFS遍历
+    DFSTraversal(startNode, adjList, tour, visited);
 
     return tour;
 }
 
 std::vector<int> MSTRoute::ShortcutEulerTour(const std::vector<int>& eulerTour)
 {
-    std::vector<int> shortcutTour;
-    std::unordered_set<int> visited;
+    std::vector<int> hamiltonianPath;
+    std::unordered_set<int> visitedNodes;
 
-    // Add start node
-    shortcutTour.push_back(eulerTour[0]);
-    visited.insert(eulerTour[0]);
-
-    // Process all nodes in Euler tour
-    for (size_t i = 1; i < eulerTour.size(); i++) {
-        int node = eulerTour[i];
-
-        // Add node if not visited before
-        if (visited.find(node) == visited.end()) {
-            shortcutTour.push_back(node);
-            visited.insert(node);
+    for (int node : eulerTour) {
+        // 只添加未访问过的节点
+        if (visitedNodes.find(node) == visitedNodes.end()) {
+            hamiltonianPath.push_back(node);
+            visitedNodes.insert(node);
         }
     }
 
-    // MST路线不需要返回起始点，因此不添加返回站点的代码
-
-    return shortcutTour;
+    return hamiltonianPath;
 }
-
-bool MSTRoute::CalculateRoute(const std::vector<WasteLocation>& locations)
+std::vector<float> MSTRoute::CalculateSegmentDistances(const std::vector<int>& route)
 {
-    // Clear previous route data
-    m_finalRoute.clear();
-    m_individualDistances.clear();
-    m_totalDistance = 0.0f;
-    m_timeTaken = 0.0f;
-    m_fuelConsumption = 0.0f;
-    m_wage = 0.0f;
-    m_totalCost = 0.0f;
+    std::vector<float> distances;
 
-    // Filter destinations based on waste level and distance
+    // 计算路径上每个相邻节点对之间的距离
+    for (size_t i = 0; i < route.size() - 1; i++) {
+        int from = route[i];
+        int to = route[i + 1];
+        float distance = WasteLocation::map_distance_matrix[from][to];
+        distances.push_back(distance);
+    }
+
+    return distances;
+}
+std::vector<int> MSTRoute::PathReconstruction(int start, int end, const int matrix[8][8]) {
+    std::vector<int> path;
+    while (start != end) {
+        path.push_back(start);
+        start = matrix[start][end];
+    }
+    path.push_back(end);
+    return path;
+}
+std::vector<int> MSTRoute::ExpandRouteWithIntermediateNodes(const std::vector<int>& basicRoute) {
+    std::vector<int> expandedRoute;
+
+    // 添加第一个节点
+    if (!basicRoute.empty()) {
+        expandedRoute.push_back(basicRoute[0]);
+    }
+
+    // 扩展路径，避免重复
+    for (size_t i = 0; i < basicRoute.size() - 1; i++) {
+        int start = basicRoute[i];
+        int end = basicRoute[i + 1];
+
+        // 找到从start到end的最短路径
+        std::vector<int> path = PathReconstruction(start, end, OptimizedRoute::s_shortestRouteMatrix);
+
+        // 添加中间节点 (跳过起点，它已经在expandedRoute中)
+        for (size_t j = 1; j < path.size(); j++) {
+            // 只添加未访问过的节点
+            if (std::find(expandedRoute.begin(), expandedRoute.end(), path[j]) == expandedRoute.end()) {
+                expandedRoute.push_back(path[j]);
+            }
+        }
+    }
+
+    return expandedRoute;
+}
+bool MSTRoute::CalculateRoute(const std::vector<WasteLocation>& locations) {
+    // 筛选需要访问的目的地
     m_filteredDestinations = FilterDestinations(locations);
 
-    // Check if any locations need pickup (besides the station)
-    if (m_filteredDestinations.size() <= 1) {
-        m_pickupRequired = false;
-        return false;
+    // 检查是否需要收集
+    m_pickupRequired = !m_filteredDestinations.empty();
+
+    if (!m_pickupRequired) {
+        return false; // 没有需要收集的点
     }
 
-    m_pickupRequired = true;
-
-    // Build MST
+    // 使用Prim算法构建MST
     std::vector<std::pair<int, int>> mst = BuildMST(m_filteredDestinations);
 
-    // Generate Euler tour
-    std::vector<int> eulerTour = GenerateEulerTour(mst, 0);
+    // 生成欧拉回路
+    std::vector<int> eulerTour = GenerateEulerTour(mst, 0); // 从站点0开始
 
-    // Shortcut Euler tour to get Hamiltonian path
-    m_finalRoute = ShortcutEulerTour(eulerTour);
+    // 将欧拉回路转换为哈密顿路径
+    std::vector<int> shortcutTour = ShortcutEulerTour(eulerTour);
 
-    // Calculate individual segment distances
-    for (size_t i = 0; i < m_finalRoute.size() - 1; i++) {
-        int fromId = m_finalRoute[i];
-        int toId = m_finalRoute[i + 1];
+    // 扩展路径以包含中间节点 - 新增这一步
+    // 注意：MST不需要返回起点
+    m_finalRoute = ExpandRouteWithIntermediateNodes(shortcutTour);
 
-        // 获取直线距离
-        float distance = WasteLocation::map_distance_matrix[fromId][toId];
-        m_individualDistances.push_back(distance);
-    }
+    // 计算每段距离
+    m_individualDistances = CalculateSegmentDistances(m_finalRoute);
 
-    // Calculate costs
+    // 计算总距离、时间和成本
     CalculateCosts();
 
     return true;

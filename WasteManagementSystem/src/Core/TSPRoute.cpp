@@ -11,7 +11,60 @@ TSPRoute::TSPRoute()
 TSPRoute::~TSPRoute()
 {
 }
+std::vector<int> TSPRoute::PathReconstruction(int start, int end, const int matrix[8][8])
+{
+    std::vector<int> path;
+    while (start != end)
+    {
+        path.push_back(start);
+        start = matrix[start][end];
+    }
+    path.push_back(end);
+    return path;
+}
+std::vector<float> TSPRoute::CalculateSegmentDistances(const std::vector<int>& route)
+{
+    std::vector<float> distances;
 
+    // 计算路径上每个相邻节点对之间的距离
+    for (size_t i = 0; i < route.size() - 1; i++) {
+        int from = route[i];
+        int to = route[i + 1];
+        float distance = WasteLocation::map_distance_matrix[from][to];
+        distances.push_back(distance);
+    }
+
+    return distances;
+}
+std::vector<int> TSPRoute::ExpandRouteWithIntermediateNodes(const std::vector<int>& basicRoute)
+{
+    std::vector<int> expandedRoute;
+
+    // 添加第一个节点
+    if (!basicRoute.empty()) {
+        expandedRoute.push_back(basicRoute[0]);
+    }
+
+    // 扩展路径，避免重复
+    for (size_t i = 0; i < basicRoute.size() - 1; i++) {
+        int start = basicRoute[i];
+        int end = basicRoute[i + 1];
+
+        // 找到从start到end的最短路径
+        std::vector<int> path = PathReconstruction(start, end, OptimizedRoute::s_shortestRouteMatrix);
+
+        // 添加中间节点 (跳过起点，它已经在expandedRoute中)
+        for (size_t j = 1; j < path.size(); j++) {
+            // 只添加未访问过的节点，除了最后一个节点可以是Station(0)
+            if (std::find(expandedRoute.begin(), expandedRoute.end(), path[j]) == expandedRoute.end() ||
+                (path[j] == 0 && i == basicRoute.size() - 2)) { // 允许返回Station
+                expandedRoute.push_back(path[j]);
+            }
+        }
+    }
+
+    return expandedRoute;
+}
 std::vector<int> TSPRoute::FilterDestinations(const std::vector<WasteLocation>& locations)
 {
     std::vector<int> filteredDestinations;
@@ -31,48 +84,30 @@ std::vector<int> TSPRoute::FilterDestinations(const std::vector<WasteLocation>& 
     return filteredDestinations;
 }
 
-bool TSPRoute::CalculateRoute(const std::vector<WasteLocation>& locations)
-{
-    // Clear previous route data
-    m_finalRoute.clear();
-    m_individualDistances.clear();
-    m_totalDistance = 0.0f;
-    m_timeTaken = 0.0f;
-    m_fuelConsumption = 0.0f;
-    m_wage = 0.0f;
-    m_totalCost = 0.0f;
-
-    // Filter destinations based on waste level and distance
+bool TSPRoute::CalculateRoute(const std::vector<WasteLocation>& locations) {
+    // 筛选需要访问的目的地
     m_filteredDestinations = FilterDestinations(locations);
 
-    // Check if any locations need pickup
-    if (m_filteredDestinations.empty()) {
-        m_pickupRequired = false;
-        return false;
+    // 检查是否需要收集
+    m_pickupRequired = !m_filteredDestinations.empty();
+
+    if (!m_pickupRequired) {
+        return false; // 没有需要收集的点
     }
 
-    m_pickupRequired = true;
-
-    // First, use nearest neighbor heuristic to get an initial solution
+    // 使用最近邻算法获取初始TSP解决方案
     std::vector<int> initialRoute = SolveNearestNeighbor(m_filteredDestinations);
 
-    // Then, improve the solution using 2-opt local search
+    // 使用2-opt本地搜索改进路径
     std::vector<int> improvedRoute = Improve2Opt(initialRoute);
 
-    // Set the final route
-    m_finalRoute = improvedRoute;
+    // 扩展路径以包含中间节点 - 新增这一步
+    m_finalRoute = ExpandRouteWithIntermediateNodes(improvedRoute);
 
-    // Calculate individual segment distances
-    for (size_t i = 0; i < m_finalRoute.size() - 1; i++) {
-        int fromId = m_finalRoute[i];
-        int toId = m_finalRoute[i + 1];
+    // 计算每段距离
+    m_individualDistances = CalculateSegmentDistances(m_finalRoute);
 
-        // 使用直线距离
-        float distance = WasteLocation::map_distance_matrix[fromId][toId];
-        m_individualDistances.push_back(distance);
-    }
-
-    // Calculate costs
+    // 计算总距离、时间和成本
     CalculateCosts();
 
     return true;

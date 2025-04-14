@@ -25,11 +25,11 @@ private:
     // Generate greedy route visiting all filtered destinations
     std::vector<int> GenerateGreedyRoute(const std::vector<int>& destinations);
 
-    // Expand route with intermediate nodes for nodes not directly connected
-    std::vector<int> ExpandRouteWithIntermediateNodes(const std::vector<int>& basicRoute);
-
     // Path reconstruction helper (similar to OptimizedRoute)
     std::vector<int> PathReconstruction(int start, int end, const int matrix[8][8]);
+
+    // Expand route with intermediate nodes for nodes not directly connected
+    std::vector<int> ExpandRouteWithIntermediateNodes(const std::vector<int>& basicRoute);
 
     // Calculate individual segment distances
     std::vector<float> CalculateSegmentDistances(const std::vector<int>& route);
