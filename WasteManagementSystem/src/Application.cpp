@@ -11,9 +11,9 @@ Application::Application()
     m_currentRoute(nullptr),
     m_currentRouteIndex(0),
     m_running(false),
-    m_fuelCostPerKm(1.5f),          // 默认值
-    m_driverWagePerHour(6.0f),     // 默认值
-    m_drivingSpeedMinPerKm(1.5f)    // 默认值
+    m_fuelCostPerKm(1.5f),          
+    m_driverWagePerHour(6.0f),   
+    m_drivingSpeedMinPerKm(1.5f) 
 {
 }
 
@@ -62,7 +62,6 @@ void Application::InitializeRouteAlgorithms()
     m_tspRoute = std::make_unique<TSPRoute>();
     m_greedyRoute = std::make_unique<GreedyRoute>();
 
-    // 设置Application指针
     m_nonOptimizedRoute->SetApplication(this);
     m_optimizedRoute->SetApplication(this);
     m_mstRoute->SetApplication(this);
@@ -114,7 +113,6 @@ void Application::UpdateAIComponents()
     // Update waste level predictor with current waste levels
     m_wasteLevelPredictor->UpdateModel(m_wasteLocations);
 
-    // Other AI component updates would go here
 }
 
 void Application::Shutdown()

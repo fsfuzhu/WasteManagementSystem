@@ -337,8 +337,6 @@ void WasteLevelPredictor::UpdateModel(const std::vector<WasteLocation>& location
         }
     }
 
-    // We would also update neural network weights here in a real implementation
-    // For demo purposes, we'll skip this step
 }
 
 int WasteLevelPredictor::GetRecommendedCollectionDay(const std::string& locationName, float threshold)
