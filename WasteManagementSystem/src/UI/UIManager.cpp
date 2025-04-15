@@ -1094,24 +1094,8 @@ void UIManager::RenderSettingsWindow()
     ImGui::Begin("Settings", &m_showSettingsWindow);
 
     ImGui::Text("Application Settings");
-    ImGui::Separator();
 
-    // UI设置
-    ImGui::Text("UI Settings:");
-
-    static bool darkTheme = true;
-    if (ImGui::Checkbox("Dark Theme", &darkTheme)) {
-        if (darkTheme) {
-            ImGui::StyleColorsDark();
-        }
-        else {
-            ImGui::StyleColorsLight();
-        }
-
-        // 更新样式
-        SetupImGuiStyle();
-    }
-
+    SetupImGuiStyle();
     // 模拟设置
     ImGui::Separator();
     ImGui::Text("Simulation Settings:");
