@@ -106,46 +106,98 @@ std::vector<std::pair<int, int>> MSTRoute::BuildMST(const std::vector<int>& dest
 std::vector<std::vector<int>> MSTRoute::CreateAdjacencyList(
     const std::vector<std::pair<int, int>>& mst, int numNodes)
 {
+    // Find the maximum vertex ID to ensure adjList is large enough
+    int maxVertex = -1;
+    for (const auto& edge : mst) {
+        maxVertex = std::max(maxVertex, edge.first);
+        maxVertex = std::max(maxVertex, edge.second);
+    }
+
+    // Ensure numNodes is at least maxVertex + 1
+    numNodes = std::max(numNodes, maxVertex + 1);
+
     // Initialize adjacency list
     std::vector<std::vector<int>> adjList(numNodes);
 
-    // Add edges from MST
+    // Add edges from MST with bounds checking
     for (const auto& edge : mst) {
         int u = edge.first;
         int v = edge.second;
 
-        adjList[u].push_back(v);
-        adjList[v].push_back(u); // Undirected graph
+        // Verify indices are within bounds
+        if (u >= 0 && u < numNodes && v >= 0 && v < numNodes) {
+            adjList[u].push_back(v);
+            adjList[v].push_back(u); // Undirected graph
+        }
+        else {
+            // Log error or handle invalid vertices
+            std::cerr << "Invalid vertex in MST edge: (" << u << ", " << v << ")" << std::endl;
+        }
     }
 
     return adjList;
 }
 
 void MSTRoute::DFSTraversal(int node, std::vector<std::vector<int>>& adjList,
-    std::vector<int>& tour, std::vector<bool>& visited)
-{
+    std::vector<int>& tour, std::vector<bool>& visited) {
+    // Bounds check to prevent out-of-range access
+    if (node < 0 || node >= static_cast<int>(visited.size())) {
+        std::cerr << "Error: Node index " << node << " out of range in DFSTraversal" << std::endl;
+        return;
+    }
+
+    // If already visited, don't process again
+    if (visited[node]) {
+        return;
+    }
+
+    // Mark as visited and add to tour
     visited[node] = true;
     tour.push_back(node);
 
-    for (int neighbor : adjList[node]) {
-        if (!visited[neighbor]) {
-            DFSTraversal(neighbor, adjList, tour, visited);
+    // Process each neighbor with bounds checking
+    if (node < static_cast<int>(adjList.size())) {
+        for (int neighbor : adjList[node]) {
+            if (neighbor >= 0 && neighbor < static_cast<int>(visited.size()) && !visited[neighbor]) {
+                DFSTraversal(neighbor, adjList, tour, visited);
+            }
         }
     }
 }
 
 
-std::vector<int> MSTRoute::GenerateEulerTour(const std::vector<std::pair<int, int>>& mst, int startNode)
-{
-    // 创建邻接表
-    int numNodes = 8; // 总共有8个位置 (0-7)
+std::vector<int> MSTRoute::GenerateEulerTour(const std::vector<std::pair<int, int>>& mst, int startNode) {
+    // Find the maximum vertex ID in the MST to correctly size our data structures
+    int maxVertex = -1;
+    for (const auto& edge : mst) {
+        maxVertex = std::max(maxVertex, edge.first);
+        maxVertex = std::max(maxVertex, edge.second);
+    }
+
+    // Ensure we have space for all possible vertices
+    int numNodes = maxVertex + 1;
+
+    // Create adjacency list from MST
     std::vector<std::vector<int>> adjList = CreateAdjacencyList(mst, numNodes);
 
-    // 进行深度优先遍历
-    std::vector<int> tour;
+    // Safety check - make sure startNode is valid
+    if (startNode < 0 || startNode >= numNodes) {
+        // Choose a valid start node as fallback
+        startNode = mst.empty() ? 0 : mst[0].first;
+        if (startNode < 0 || startNode >= numNodes) {
+            // If still invalid, return empty tour
+            std::cerr << "Error: No valid start node found for Euler Tour" << std::endl;
+            return std::vector<int>();
+        }
+    }
+
+    // Initialize visited array with correct size
     std::vector<bool> visited(numNodes, false);
 
-    // 开始DFS遍历
+    // Result vector to store the tour
+    std::vector<int> tour;
+
+    // Perform DFS traversal
     DFSTraversal(startNode, adjList, tour, visited);
 
     return tour;

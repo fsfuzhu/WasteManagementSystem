@@ -183,24 +183,24 @@ void UIManager::RenderMenuBar()
 {
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("New Simulation", "Ctrl+N")) {
+            if (ImGui::MenuItem("New Simulation")) {
                 // Reset simulation - regenerate waste levels
-                m_application->RegenerateWasteLevels();
+                m_application->RegenerateLocations();
             }
 
-            if (ImGui::MenuItem("Regenerate Locations Only", "Ctrl+L")) {
+            if (ImGui::MenuItem("Regenerate Locations Only")) {
                 // Regenerate only locations, keep waste levels
                 m_application->RegenerateLocations(false);
             }
 
-            if (ImGui::MenuItem("Regenerate Waste Levels Only", "Ctrl+W")) {
+            if (ImGui::MenuItem("Regenerate Waste Levels Only")) {
                 // Regenerate only waste levels, keep locations
                 m_application->RegenerateWasteLevels();
             }
 
             ImGui::Separator();
 
-            if (ImGui::MenuItem("Export Report", "Ctrl+E")) {
+            if (ImGui::MenuItem("Export Report")) {
                 // Export route report
                 m_application->ExportRouteReport("WasteManagementReport.txt");
             }
@@ -242,21 +242,15 @@ void UIManager::RenderMenuBar()
                 m_application->SelectRoute(4);
             }
 
-            ImGui::Separator();
-
-            if (ImGui::MenuItem("Recalculate Current Route", "F5")) {
-                m_application->RecalculateCurrentRoute();
-            }
-
             ImGui::EndMenu();
         }
 
         if (ImGui::BeginMenu("AI Tools")) {
-            if (ImGui::MenuItem("Predict Waste Levels", "Ctrl+P")) {
+            if (ImGui::MenuItem("Predict Waste Levels")) {
                 m_showAIWindow = true;
             }
 
-            if (ImGui::MenuItem("Apply AI Route Optimization", "Ctrl+O")) {
+            if (ImGui::MenuItem("Apply AI Route Optimization")) {
                 m_application->OptimizeWithAI();
             }
 
@@ -453,13 +447,6 @@ void UIManager::RenderComparisonWindow()
 
     if (ImGui::Button("Regenerate Locations")) {
         m_application->RegenerateLocations(false);  // Don't regenerate waste levels
-    }
-
-    ImGui::SameLine();
-
-    // Button to recalculate routes
-    if (ImGui::Button("Recalculate All Routes")) {
-        m_application->RecalculateCurrentRoute();
     }
 
     ImGui::SameLine();

@@ -245,122 +245,24 @@ void Application::RegenerateWasteLevels()
 
 void Application::ExportRouteReport(const std::string& filename)
 {
-    // Open file for writing
-    std::ofstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open file: " << filename << std::endl;
-        return;
+    // Define m_routes as a vector of Route pointers to hold all route algorithms  
+    std::vector<Route*> m_routes = {
+        m_nonOptimizedRoute.get(),
+        m_optimizedRoute.get(),
+        m_mstRoute.get(),
+        m_tspRoute.get(),
+        m_greedyRoute.get()
+    };
+
+    // Generate predictions if WasteLevelPredictor is available  
+    std::unordered_map<std::string, std::vector<float>> predictions;
+    if (m_wasteLevelPredictor) {
+        predictions = m_wasteLevelPredictor->GenerateForecasts(7); // 7-day forecast  
     }
 
-    // Write report header
-    file << "==========================================" << std::endl;
-    file << "Waste Management System - Route Report" << std::endl;
-    file << "==========================================" << std::endl;
-
-    // Current time
-    auto now = std::chrono::system_clock::now();
-    auto time = std::chrono::system_clock::to_time_t(now);
-    file << "Date: " << std::ctime(&time) << std::endl;
-
-    // Write map
-    file << "-----------------------------------------" << std::endl;
-    file << "City Map:" << std::endl;
-    file << "-----------------------------------------" << std::endl;
-
-    file << "Station ------------3-------------A" << std::endl;
-    file << " |                                |" << std::endl;
-    file << " |                                |" << std::endl;
-    file << " 4                                6" << std::endl;
-    file << " |                                |" << std::endl;
-    file << " |                                |" << std::endl;
-    file << " |                                |" << std::endl;
-    file << "G ----3-----F ----2----C ----5----B" << std::endl;
-    file << " |           |                    " << std::endl;
-    file << " |           |                    " << std::endl;
-    file << " |           |                    " << std::endl;
-    file << " |           2----D ----4         " << std::endl;
-    file << std::endl;
-
-    // Write waste levels
-    file << "-----------------------------------------" << std::endl;
-    file << "Waste Levels:" << std::endl;
-    file << "-----------------------------------------" << std::endl;
-
-    file << "Location\tWaste Level" << std::endl;
-    file << "-----------------------------------------" << std::endl;
-
-    for (const auto& location : m_wasteLocations) {
-        file << location.GetLocationName() << "\t\t"
-            << location.GetWasteLevel() << "%" << std::endl;
-    }
-
-    file << std::endl;
-
-    // Write route information for each algorithm
-    WriteRouteReport(file, m_nonOptimizedRoute.get(), "Non-Optimized Route");
-    WriteRouteReport(file, m_optimizedRoute.get(), "Optimized Route");
-    WriteRouteReport(file, m_mstRoute.get(), "MST Route");
-    WriteRouteReport(file, m_tspRoute.get(), "TSP Route");
-    WriteRouteReport(file, m_greedyRoute.get(), "Greedy Route");
-
-    // Write comparison summary
-    file << "==========================================" << std::endl;
-    file << "Route Comparison Summary:" << std::endl;
-    file << "==========================================" << std::endl;
-
-    file << "Route Type\tTotal Distance\tTotal Cost" << std::endl;
-    file << "-----------------------------------------" << std::endl;
-
-    file << "Non-Optimized\t" << m_nonOptimizedRoute->GetTotalDistance() << " km\t"
-        << "RM " << m_nonOptimizedRoute->GetTotalCost() << std::endl;
-
-    file << "Optimized\t" << m_optimizedRoute->GetTotalDistance() << " km\t"
-        << "RM " << m_optimizedRoute->GetTotalCost() << std::endl;
-
-    file << "MST\t\t" << m_mstRoute->GetTotalDistance() << " km\t"
-        << "RM " << m_mstRoute->GetTotalCost() << std::endl;
-
-    file << "TSP\t\t" << m_tspRoute->GetTotalDistance() << " km\t"
-        << "RM " << m_tspRoute->GetTotalCost() << std::endl;
-
-    file << "Greedy\t\t" << m_greedyRoute->GetTotalDistance() << " km\t"
-        << "RM " << m_greedyRoute->GetTotalCost() << std::endl;
-
-    file << std::endl;
-
-    // Write AI predictions
-    file << "==========================================" << std::endl;
-    file << "Waste Level Predictions:" << std::endl;
-    file << "==========================================" << std::endl;
-
-    file << "Location\tCurrent Level\t3-Day Forecast\t7-Day Forecast" << std::endl;
-    file << "-----------------------------------------" << std::endl;
-
-    for (const auto& location : m_wasteLocations) {
-        if (location.GetLocationName() != "Station") {
-            file << location.GetLocationName() << "\t\t"
-                << location.GetWasteLevel() << "%\t\t"
-                << m_wasteLevelPredictor->PredictWasteLevel(location.GetLocationName(), 3) << "%\t\t"
-                << m_wasteLevelPredictor->PredictWasteLevel(location.GetLocationName(), 7) << "%" << std::endl;
-        }
-    }
-
-    file << std::endl;
-
-    // Close file
-    file.close();
-
-    std::cout << "Route report exported to: " << filename << std::endl;
+    // Use the FileIO function to export a complete report  
+    FileIO::ExportCompleteReport(m_routes, m_wasteLocations, predictions, filename);
 }
-//void Application::ExportRouteReport(const std::string& filename)
-//{
-//    std::unordered_map<std::string, std::vector<float>> predictions;
-//    if (m_wasteLevelPredictor) {
-//        predictions = m_wasteLevelPredictor->GenerateForecasts(7); // 7-day forecast
-//    }
-//    // Use the FileIO function to export a complete report
-//    return FileIO::ExportCompleteReport(m_routes, m_wasteLocations, predictions, filename);
-//}
 
 void Application::WriteRouteReport(std::ofstream& file, Route* route, const std::string& title)
 {
@@ -429,15 +331,49 @@ void Application::PredictFutureWasteLevels(int daysAhead)
 
 void Application::OptimizeWithAI()
 {
-    // Apply AI optimizations to find the best route strategy
-    std::cout << "Applying AI optimization..." << std::endl;
+    // Apply AI optimizations to find the route with the lowest cost
+    std::cout << "Applying AI optimization to find lowest cost route..." << std::endl;
 
-    // This is a placeholder for actual AI optimization
-    // In a real implementation, we would use the AI components to determine
-    // the best route strategy based on current conditions
+    // Store the minimum cost and corresponding route index
+    float minCost = std::numeric_limits<float>::max();
+    int minCostIndex = -1;
 
-    // For demonstration, select the optimized route
-    SelectRoute(1);
+    // Get current route index to restore if needed
+    int originalRouteIndex = GetCurrentRouteIndex();
 
-    std::cout << "AI optimization complete. Selected: " << m_currentRoute->GetRouteName() << std::endl;
+    // From the context of your code, it appears you have 5 route types
+    // Non-Optimized (0), Optimized (1), MST (2), TSP (3), Greedy (4)
+    const int numRoutes = 5;
+
+    // Evaluate the cost of each route
+    for (int i = 0; i < numRoutes; i++) {
+        // Switch to this route to calculate costs
+        SelectRoute(i);
+
+        // Get cost of current route (if it found a valid path)
+        if (m_currentRoute && m_currentRoute->GetFinalRoute().size() > 0) {
+            float cost = m_currentRoute->GetTotalCost();
+
+            // Update if this is the lowest cost so far
+            if (cost < minCost) {
+                minCost = cost;
+                minCostIndex = i;
+            }
+
+            std::cout << "Route " << i << " (" << m_currentRoute->GetRouteName()
+                << "): Cost = RM " << cost << std::endl;
+        }
+    }
+
+    // Select the lowest cost route if found
+    if (minCostIndex >= 0) {
+        SelectRoute(minCostIndex);
+        std::cout << "AI optimization complete. Selected lowest cost route: "
+            << m_currentRoute->GetRouteName() << " (RM " << minCost << ")" << std::endl;
+    }
+    else {
+        // If no valid route was found, restore original
+        SelectRoute(originalRouteIndex);
+        std::cout << "AI optimization failed: No valid routes found." << std::endl;
+    }
 }
