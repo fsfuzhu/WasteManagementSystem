@@ -16,7 +16,7 @@ UIManager::UIManager(Application* application)
     m_showDetailsWindow(true),
     m_showComparisonWindow(true),
     m_showAIWindow(true),
-    m_showSettingsWindow(false),
+    m_showSettingsWindow(true),
     m_windowWidth(1280),
     m_windowHeight(720)
 {
