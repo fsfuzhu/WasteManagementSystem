@@ -220,7 +220,6 @@ void UIManager::RenderMenuBar()
             ImGui::MenuItem("Route Comparison", nullptr, &m_showComparisonWindow);
             ImGui::MenuItem("AI Tools", nullptr, &m_showAIWindow);
             ImGui::MenuItem("Settings", nullptr, &m_showSettingsWindow);
-            ImGui::Separator();
 
             ImGui::EndMenu();
         }
